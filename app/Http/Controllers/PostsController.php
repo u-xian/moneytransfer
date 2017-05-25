@@ -19,7 +19,7 @@ class PostsController extends Controller
     {
         //
         $post = Post::all();
-        return $categories;
+        return $post;
     }
 
     /**
