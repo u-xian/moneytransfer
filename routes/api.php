@@ -16,10 +16,17 @@ Route::post('login', 'UserController@login');
 Route::post('suspendreactivate/{id}','AuthenticateController@suspendReactivate');
 Route::post('resetpassword/{id}', 'AuthenticateController@resetPassword');
 
+//
 Route::resource('user', 'UsersController');
 Route::resource('customer', 'CustomerController');
 Route::resource('currency', 'CurrenciesController');
 Route::resource('country', 'CountriesController');
+Route::resource('category', 'CategoriesController');
+Route::resource('tag', 'TagsController');
+Route::resource('blogpost', 'PostsController');
+
+
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
