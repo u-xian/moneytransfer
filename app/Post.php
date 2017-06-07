@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\User;
+use App\BlogPostComments;
 
 class Post extends Model
 {
@@ -13,7 +15,7 @@ class Post extends Model
         return $this->belongsToMany('App\BlogTag','blog_post_tags','post_id','tag_id');
     }
     public function comments(){
-        return $this->hasMany('App\Comments','on_post');
+        return $this->hasMany('App\BlogPostComments','on_post');
     }
   // returns the instance of the user who is author of that post
     public function author(){

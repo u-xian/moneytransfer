@@ -21,9 +21,9 @@ class BlogPostsTableSeeder extends Seeder
                 'title' => $faker->unique()->sentence($nbWords = 6),
                 'description' => $faker->paragraph($nbSentences = 1),
                 'content' => $faker->text,
-                'image' => $faker->randomElement($array = array ('blog-one.jpg','blog-two.jpg','blog-three.jpg')),
+                'image' => $faker->randomElement($array = array ('blog1.jpg','blog2.jpg','blog3.jpg')),
                 'category_id' => $faker->numberBetween($min = 1, $max = 3),
-                'author_id' => $faker->numberBetween($min = 1, $max = 4),
+                'author_id' => $faker->numberBetween($min = 1, $max = 2),
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
             ]);

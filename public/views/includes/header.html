@@ -21,10 +21,94 @@
 								<li role="presentation"><a href="#aboutus">About us</a></li>
 								<li role="presentation"><a href="#helpsupport">Help & Support</a></li>	
 								<li role="presentation"><a href="#blog">Blog</a></li>	
-								<li role="presentation"><a href="#">Sign in | Join </a></li>			
+								<li role="presentation"><a href="" data-toggle="modal" data-target="#myModal">Sign in | Join </a></li>			
 							</ul>
 						</div>
 					</div>						
 				</div>
 			</div>	
-		</nav>		
+		</nav>	
+	
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#signin" aria-controls="signin" role="tab" data-toggle="tab"><b>SIGN IN</b></a></li>
+                        <li role="presentation"><a href="#signup" aria-controls="signup" role="tab" data-toggle="tab"><b>JOIN</b></a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content" ng-controller="usersController">
+                        <div role="tabpanel" class="tab-pane active" id="signin">
+                        	<div>
+					            <h2>SIGN IN</h2>
+	                        </div>
+                            <div class="form-group ">
+                                <label for="exampleInputEmail1" style="color: #000000">Email</label>
+                                <input type="text" class="form-control" placeholder="Email"/>
+                            </div> 
+                            <div class="form-group ">
+                                <label for="exampleInputEmail1" style="color: #000000">Password</label>
+                                <input type="text" class="form-control" placeholder="Password"/>
+                            </div> 
+                            <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">LOGIN</button>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="signup">
+                            <div>
+					            <h2>JOIN</h2>					
+					            <h6>Already have an Account ? <a href="" style="color: #ED502E">Login Here</a></h6>
+	                        </div>
+                            <div class="form-group ">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="First Name" ng-model="users.first_name"/>
+                                    <span class="input-group-btn"></span>
+                                    <input type="text" class="form-control" placeholder="Last Name" ng-model="users.last_name"/>
+                                </div> 
+                            </div> 
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Email" ng-model="users.email"/>
+                                </div> 
+                            </div>  
+                            <div class="form-group">
+                                <div class="input-group">
+                                        <select class="form-control" ng-model="users.phone_prefix">
+                                            <option value="93">AFGHANISTAN (+93)</option>
+                                            <option value="355">ALBANIA (+355)</option>
+                                            <option value="213">ALGERIA (+213)</option>
+                                        </select>
+                                        <span class="input-group-btn"></span>
+                                        <input type="text" class="form-control" placeholder="PhoneNumber" ng-model="users.phone">
+                                </div> 
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Password" ng-model="users.password"/>
+                                    <span class="input-group-btn"></span>
+                                    <input type="text" class="form-control" placeholder="Confirm Password" ng-model="users.c_password"/>
+                                </div> 
+                            </div> 
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="checkbox" name="tos" value="tos" ng-model="users.tos">
+                                     <span style="color: #000000">I Agree to your <a href="#helpsupport" style="color: #ED502E">Terms &amp; Conditions</a></span>
+                                </div> 
+                            </div> 
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary" ng-click="save()">SIGN UP</button>
+                            </div>
+                            <span class="clearfix">   
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>	

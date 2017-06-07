@@ -24,6 +24,7 @@ Route::resource('country', 'CountriesController');
 Route::resource('category', 'CategoriesController');
 Route::resource('tag', 'TagsController');
 Route::resource('blogpost', 'PostsController');
+Route::resource('blogpostcomment', 'PostsCommentsController');
 
 
 

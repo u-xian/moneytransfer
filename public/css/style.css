@@ -1071,3 +1071,8 @@ a.scrollup:hover{
 	background-color:#ED502E;
 	color:#fff;;	
 }
+
+.input-group-btn {
+    width:0px;
+}
+.input-group { width: 100%; }

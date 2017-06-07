@@ -42,7 +42,9 @@ class UsersController extends Controller
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
-            'sex' => 'required',
+            'phone_prefix'=> 'required',
+            'tos'=> 'required',
+            'phone' => 'required',
             'email' => 'required|email',
             'password' => 'required',
             'c_password' => 'required|same:password',
@@ -52,7 +54,15 @@ class UsersController extends Controller
             return response()->json(['error'=>$validator->errors()], 401);            
         }
 
+        $tos = json_decode($request->tos);
+        if($tos === FALSE) {
+             return "You have to agree Terms and conditions";   
+        } 
+       
         $input = $request->all();
+        $phone_complete  = $input['phone_prefix'].$input['phone'];
+        $input['phone'] = $phone_complete;
+
         $user = Sentinel::registerAndActivate($input);
 
         return 'User Created'.'  '.$user['email'];
@@ -69,7 +79,7 @@ class UsersController extends Controller
         //
         // get the user
         $user = User::where('id', '=', $id)
-                         ->select('id','first_name', 'last_name','sex')->first();
+                         ->select('id','first_name', 'last_name','phone','email')->first();
 
         // show the edit form and pass the nerd
         return $user;
@@ -101,7 +111,7 @@ class UsersController extends Controller
         $credentials = [
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
-            'sex' => $request->input('sex'),
+            'phone' => $request->input('phone'),
         ];
 
         $user = Sentinel::update($user, $credentials);

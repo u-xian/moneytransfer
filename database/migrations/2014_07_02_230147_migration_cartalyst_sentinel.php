@@ -101,7 +101,7 @@ class MigrationCartalystSentinel extends Migration
             $table->timestamp('last_login')->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->char('sex',1);
+            $table->string('phone');
             $table->smallInteger('status')->default(1);     
             $table->timestamps();
 

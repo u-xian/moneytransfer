@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Post;
 use Carbon\Carbon;
@@ -18,7 +19,18 @@ class PostsController extends Controller
     public function index()
     {
         //
-        $post = Post::all();
+
+        //$post = Post::all();
+
+        $post= Post::select(['id','url','title','description','content','image','author_id','created_at'])
+                ->with(['author' =>function ($q) {
+                            $q->select(['id','first_name','last_name']);
+                        }, 
+                        'comments' => function ($query) {
+                            $query->select(['id','body','created_at','names','email','on_post']);
+                        }])
+                ->get();
+
         return $post;
     }
 
@@ -71,7 +83,28 @@ class PostsController extends Controller
     public function show($id)
     {
         //
-        $post = Post::find($id);
+        //$post = Post::find($id);
+        //$post= Post::with('author','comments')->find($id);
+
+        $post= Post::select(['id','url','title','description','content','image','author_id','created_at'])
+                ->with(['author' =>function ($q) {
+                            $q->select(['id','first_name','last_name']);
+                        }, 
+                        'comments' => function ($query) {
+                            $query->select(['id','body','created_at','names','email','on_post']);
+                        }])
+                ->find($id);
+
+
+        /*$post = Post::select(['id','url','title','description','content','image','created_at'])
+                   ->with(['comments' => function($q){
+                        $q->select(['id','body','created_at','names','email','on_post']);
+                    }])
+                   ->with(['author' => function($r){
+                        $r->select(['id','first_name']);
+                    }])->find($id);*/
+
+
 
         if(!$post){
             return Response::json([
