@@ -43,7 +43,8 @@ class PostsCommentsController extends Controller
         //
         $validator = Validator::make($request->all(), [
             'on_post' => 'required',
-            'from_user' => 'required',
+            'names' => 'required',
+            'email' => 'required',
             'body' => 'required',
         ]);
 
@@ -68,7 +69,11 @@ class PostsCommentsController extends Controller
     public function show($id)
     {
         //
-        $comment = BlogPostComments::find($id);
+        //$comment = BlogPostComments::find($id);
+
+        $comment = BlogPostComments::where('on_post', $id)
+               ->orderBy('created_at')
+               ->get();
 
         if(!$comment){
             return Response::json([

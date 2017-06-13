@@ -29,7 +29,7 @@ class PostsController extends Controller
                         'comments' => function ($query) {
                             $query->select(['id','body','created_at','names','email','on_post']);
                         }])
-                ->get();
+                ->paginate(3);
 
         return $post;
     }

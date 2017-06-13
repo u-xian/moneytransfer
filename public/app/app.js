@@ -61,10 +61,42 @@ var app = angular.module('MoneyTransferApp', ['ngRoute']);
             return new Date(timestamp);
         }
         //retrieve blog post listing from API
-        $http.get(API_URL + "blogpost")
-            .success(function(response) {
-                $scope.blogposts = response;
-        });
+        $scope.currentPage ;
+        $scope.getPosts = function(pageNumber){
+            if(pageNumber===undefined){
+                pageNumber = '1';
+            }
+            $http.get(API_URL + "blogpost?page="+pageNumber)
+                .success(function(response) {
+                    $scope.blogposts = response.data;
+                    currentPage = response.current_page;
+                    $scope.totalPages   = response.last_page;
+        
+                    // Pagination Range
+                    var pages = [];
+
+                    for(var i=1;i<=response.last_page;i++) {          
+                        pages.push(i);
+                    }
+
+                    $scope.range = pages; 
+                });
+        }
+
+        $scope.nextPage = function() {
+                if (currentPage < $scope.totalPages) {
+                    currentPage++;
+                    $scope.getPosts(currentPage);
+                }
+            };
+        $scope.prevPage = function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    $scope.getPosts(currentPage);
+                }
+            };
+        $scope.getPosts(1);
+
 
 
     });
@@ -82,6 +114,32 @@ var app = angular.module('MoneyTransferApp', ['ngRoute']);
             .success(function(response) {
                 $scope.posts = response;
         });
+        
+        $scope.getComments = function(pid){
+            $http.get(API_URL + 'blogpostcomment/' + pid)
+                .success(function(response) {
+                    $scope.comments = response;
+            });
+        }
+        $scope.getComments(id);
+
+        $scope.saveComment = function() {
+            $scope.commentPost['on_post'] = id;
+            console.log($scope.commentPost);
+            var url = API_URL + "blogpostcomment";
+            $http({
+                method: 'POST',
+                url: url,
+                data: $.param( $scope.commentPost),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(response) { 
+                  $scope.getComments(id);
+                  $scope.personForm.$setPristine();
+                }).error(function(response) {
+                    alert('An error has occured. Please check the log for details');
+                });
+
+        }
       
     });
 
