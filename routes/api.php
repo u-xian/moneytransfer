@@ -12,18 +12,21 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('login', 'UserController@login');
+Route::post('login', 'AuthenticateController@login');
 Route::post('suspendreactivate/{id}','AuthenticateController@suspendReactivate');
 Route::post('resetpassword/{id}', 'AuthenticateController@resetPassword');
 
 //
 Route::resource('user', 'UsersController');
+Route::get('checkuserstatus/{id}', 'UsersController@isActivated');
+Route::get('activate/{id}', 'UsersController@activate');
 Route::resource('customer', 'CustomerController');
 Route::resource('currency', 'CurrenciesController');
 Route::resource('country', 'CountriesController');
 Route::resource('category', 'CategoriesController');
 Route::resource('tag', 'TagsController');
 Route::resource('blogpost', 'PostsController');
+Route::get('archievepost', 'PostsController@archieve');
 Route::resource('blogpostcomment', 'PostsCommentsController');
 
 

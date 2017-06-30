@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Cartalyst\Sentinel\Native\Facades\Sentinel;
 use App\User;
+use Activation;
 use Response;
 
 class UsersController extends Controller
@@ -40,11 +41,7 @@ class UsersController extends Controller
     {
         //
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'phone_prefix'=> 'required',
             'tos'=> 'required',
-            'phone' => 'required',
             'email' => 'required|email',
             'password' => 'required',
             'c_password' => 'required|same:password',
@@ -60,12 +57,18 @@ class UsersController extends Controller
         } 
        
         $input = $request->all();
-        $phone_complete  = $input['phone_prefix'].$input['phone'];
-        $input['phone'] = $phone_complete;
+        //$phone_complete  = $input['phone_prefix'].$input['phone'];
+        //$input['phone'] = $phone_complete;
 
-        $user = Sentinel::registerAndActivate($input);
-
-        return 'User Created'.'  '.$user['email'];
+        //$user = Sentinel::registerAndActivate($input);
+        $user = Sentinel::register($input);
+        /*$outputs = [
+                'first_name'=> $user['first_name'],
+                'last_name'=> $user['last_name'],
+                'email' => $user['email'],
+                'status' => $user['status'],
+            ];*/
+        return $user;
     }
 
     /**
@@ -131,4 +134,40 @@ class UsersController extends Controller
     {
         //          
     }
+    
+    public function activate($id){
+        //
+        $user = Sentinel::findById($id);
+        $activation = Activation::create($user);
+
+        if (Activation::complete($user, $activation['code']))
+        {
+             // Activation was successfull
+            $rsp = 1;
+        }
+        else
+        {
+             // Activation not found or not completed.
+            $rsp = 0;
+        } 
+        return Response::json(['status' => $rsp]);
+
+    }
+    public function isActivated($id)
+    {
+        // 
+        $user = Sentinel::findById($id);
+        if ($activation = Activation::completed($user))
+        {
+            // User has completed the activation process
+            return Response::json(['status' => '1']); 
+        }
+        else
+        {
+            // Activation not found or not completed
+            return Response::json(['status' => '0']); 
+        }         
+    }
+
+
 }

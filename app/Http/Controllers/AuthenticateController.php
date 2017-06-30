@@ -12,6 +12,46 @@ class AuthenticateController extends Controller
 {
     //
      /**
+     * Login api
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error'=>$validator->errors()], 401);            
+        }
+        
+        $credentials = [
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+        ];
+        
+        //check login details
+        if($user = Sentinel::authenticate($credentials))
+        {
+            $outputs = [
+                'id'=> $user['id'],
+                'email' => $user['email'],
+                'status' => $user['status'],
+                
+            ];
+            return $outputs;
+        }
+        else
+        {
+            echo 'Not Logged';
+        }
+    }
+
+    //
+     /**
      * Register api
      *
      * @return \Illuminate\Http\Response
@@ -33,8 +73,13 @@ class AuthenticateController extends Controller
 
         $input = $request->all();
         $user = Sentinel::registerAndActivate($input);
-
-        return 'User Created'.'  '.$user['email'];
+        $outputs = [
+                'first_name'=> $user['first_name'],
+                'last_name'=> $user['last_name'],
+                'email' => $user['email'],
+                'status' => $user['status'],
+            ];
+        return $outputs;
     }
 
     public function show($id)

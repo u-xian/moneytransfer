@@ -1,0 +1,245 @@
+<section id="blog" class="container">
+        <div class="blog" ng-controller="sendMOneyController">
+            <div class="row">
+                <div class="col-md-2">
+                   <div class="blog-item">
+                    <div class="entry-meta">
+                        <span id="publish_date">Home</span>
+                        <span><a href="javascript:void(0)" ng-class="{'adisabled': !usable}" ng-click="showMenu(1)">Transactions</a></span>
+                        <span><a href="javascript:void(0)" ng-class="{'adisabled': !usable}" ng-click="showMenu(2)">Send Money</a></span>
+                        <span><a href="javascript:void(0)" ng-class="{'adisabled': !usable}" ng-click="showMenu(3)">Phone Book</a></span>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                  <div class="panel panel-default" ng-show="TransactionsTable">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading"><b>Transactions</b></div>
+                    <!-- Table -->
+                    <table class="table table-striped table-bordered table-list" >
+                      <thead>
+                            <tr>
+                                <th class="hidden-xs">ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th><i class="fa fa-cog"></i></th>
+                            </tr> 
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="hidden-xs">1</td>
+                              <td>John Doe</td>
+                              <td>johndoe@example.com</td>
+                              <td align="center">
+                                <a class="btn btn-default"><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;
+                                <a class="btn btn-default"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                              </td>
+                            </tr>
+                          </tbody>
+                    </table>
+                    <div class="panel-footer">
+                      <div class="row">
+                          <div class="col col-xs-4">Page 1 of 5
+                          </div>
+                          <div class="col col-xs-8">
+                            <ul class="pagination hidden-xs pull-right">
+                              <li><a href="#">1</a></li>
+                              <li><a href="#">2</a></li>
+                              <li><a href="#">3</a></li>
+                              <li><a href="#">4</a></li>
+                              <li><a href="#">5</a></li>
+                            </ul>
+                            <ul class="pagination visible-xs pull-right">
+                              <li><a href="#">«</a></li>
+                              <li><a href="#">»</a></li>
+                            </ul>
+                           </div>
+                        </div>
+                    </div>
+                  </div>
+                    <!-- Panel -->
+                    <div class="panel panel-default" ng-show="CustomerForm" >
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Customer Information</h3>
+                      </div>
+                      <div class="panel-body" ng-controller="customerController">
+                        <form  class="form-horizontal" method="post" >
+                        <div id="div_id_name" class="form-group required"> 
+                            <label for="id_name" class="control-label col-md-4  requiredField">First name<span class="asteriskField">*</span> </label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_name" name="name" placeholder="First name" style="margin-bottom: 10px" type="text"  ng-model="record.first_name"/>
+                            </div>
+                        </div>
+
+                        <div id="div_id_name" class="form-group required"> 
+                            <label for="id_name" class="control-label col-md-4  requiredField"> Last name<span class="asteriskField">*</span> </label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_name" name="name" placeholder="Last name" style="margin-bottom: 10px" type="text"  ng-model="record.last_name"/>
+                            </div>
+                        </div>
+                        <div id="div_id_name" class="form-group required"> 
+                            <label for="id_name" class="control-label col-md-4  requiredField"> Phone Number<span class="asteriskField">*</span> </label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_name" name="name" placeholder="Your Phone Number" style="margin-bottom: 10px" type="text"  ng-model="record.phone"/>
+                            </div>
+                        </div>
+                        <div id="div_id_name" class="form-group required"> 
+                            <label for="id_name" class="control-label col-md-4  requiredField"> ID Number<span class="asteriskField">*</span> </label> 
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_name" name="name" placeholder="Your ID Number" style="margin-bottom: 10px" type="text" ng-model="record.nid"/>
+                            </div>
+                        </div>
+                        <div id="div_id_gender" class="form-group required">
+                            <label for="id_gender"  class="control-label col-md-4  requiredField"> Gender<span class="asteriskField">*</span> </label>
+                            <div class="controls col-md-8 "  style="margin-bottom: 10px">
+                                 <label class="radio-inline"> <input type="radio" name="gender" id="id_gender_1" value="M"  style="margin-bottom: 10px" ng-model="record.sex">Male</label>
+                                 <label class="radio-inline"> <input type="radio" name="gender" id="id_gender_2" value="F"  style="margin-bottom: 10px" ng-model="record.sex">Female </label>
+                            </div>
+                        </div>
+                        <div id="div_id_company" class="form-group required date"> 
+                            <label for="id_company" class="control-label col-md-4  requiredField"> Date of Birth<span class="asteriskField">*</span> </label>
+                            <div class="controls col-md-8 "> 
+                                 <div class="row">
+                                      <div class="col-xs-2">
+                                        <div class="form-group">
+                                          <select class="form-control" ng-model="record.year">
+                                            <option value="{{year.yvrb}}" ng-repeat="year in years">{{year.yvrb}}</option>
+                                          </select>
+                                        </div>
+                                      </div>
+                                      <div class="col-xs-2">
+                                        <div class="form-group">
+                                          <select class="form-control" ng-model="record.month">
+                                            <option value="{{month.mvrb}}" ng-repeat="month in months">{{month.mvrb}}</option>
+                                          </select>
+                                        </div>
+                                      </div>
+                                      <div class="col-xs-2">
+                                        <div class="form-group">
+                                          <select class="form-control" ng-model="record.day">
+                                            <option value="{{day.dvrb}}" ng-repeat="day in days">{{day.dvrb}}</option>
+                                          </select>
+                                        </div>
+                                      </div>
+                                 </div>
+                            </div>
+                        </div> 
+                        <div id="div_id_catagory" class="form-group required">
+                            <label for="id_catagory" class="control-label col-md-4  requiredField"> Nationality<span class="asteriskField">*</span> </label>
+                            <div class="controls col-md-8 "> 
+                                 <input class="input-md textinput textInput form-control" id="id_catagory" name="catagory" placeholder="Nationality" style="margin-bottom: 10px" type="text" ng-model="record.nationality"/>
+                            </div>
+                        </div> 
+                        <div class="form-group"> 
+                            <div class="aab controls col-md-4 "></div>
+                            <div class="controls col-md-8 ">
+                                <input type="hidden" ng-model="record.user_id" value="{{currentUser.id}}" ng-init="record.user_id=currentUser.id"/>
+                                <button class="btn btn-xs btn btn-primary btn btn-info pull-right" type="submit" ng-click="saveCustomer()">Submit</button>
+                            </div>
+                        </div> 
+                            
+                    </form>
+                      </div>
+                    </div>
+                    <!-- Panel Send Money-->
+                    <div class="panel panel-default" ng-show="TransferMoneyForm" >
+                      <div class="panel-heading">
+                        <h3 class="panel-title">Send Money</h3>
+                      </div>
+                      <div class="panel-body">
+                        <label  class="control-label">Receiver Firstname and Lastname</label>
+                        <div class="row">
+                            <div class="col-md-3">
+                              <div class="form-group form-group-sm">
+                                <input type="text" class="form-control" id="firstname" placeholder="Firstname">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group form-group-sm">
+                                <input type="text" class="form-control" id="lastname" placeholder="Last Name">
+                              </div>
+                            </div>
+                        </div>
+                        <label  class="control-label"> Receiver Number</label>
+                        <div class="row">
+                            <div class="col-md-3">
+                              <div class="form-group form-group-sm">
+                                <select class="form-control">
+                                            <option value="93">AFGHANISTAN(+93)</option>
+                                            <option value="355">ALBANIA(+355)</option>
+                                            <option value="213">ALGERIA(+213)</option>
+                                        </select>
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group form-group-sm">
+                                <input type="text" class="form-control"  placeholder="Phone Number">
+                              </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                              <div class="form-group form-group-sm">
+                              <label  class="control-label">Amount to receive</label>
+                                <input type="text" class="form-control"  placeholder="Amount">
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="panel-footer">
+                         <button id="btn-signup" type="button" class="btn btn-primary" ng-click="save()"><i class="icon-hand-right"></i>Send the Money</button>
+                      </div>
+                    </div>
+                     <!-- Panel PhoneBook-->
+                    <div class="panel panel-default" ng-show="PhoneBookForm" >
+                      <div class="panel-heading">
+                        <h3 class="panel-title">PhoneBook</h3>
+                      </div>
+                      <div class="panel-body">
+                        <label  class="control-label">Firstname and Lastname</label>
+                        <div class="row">
+                            <div class="col-md-3">
+                              <div class="form-group form-group-sm">
+                                <input type="text" class="form-control" id="firstname" placeholder="Firstname">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group form-group-sm">
+                                <input type="text" class="form-control" id="lastname" placeholder="Last Name">
+                              </div>
+                            </div>
+                        </div>
+                        <label  class="control-label">Phone Number</label>
+                        <div class="row">
+                            <div class="col-md-3">
+                              <div class="form-group form-group-sm">
+                                <select class="form-control">
+                                            <option value="93">AFGHANISTAN(+93)</option>
+                                            <option value="355">ALBANIA(+355)</option>
+                                            <option value="213">ALGERIA(+213)</option>
+                                        </select>
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group form-group-sm">
+                                <input type="text" class="form-control"  placeholder="Phone Number">
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="panel-footer">
+                         <button id="btn-signup" type="button" class="btn btn-primary" ng-click="save()"><i class="icon-hand-right"></i>Save Number</button>
+                      </div>
+                    </div>
+                  </div>
+                  
+
+                  <aside class="col-md-4">
+    			       </aside>  
+            </div><!--/.row-->
+
+            
+
+
+        </div>
+    </section><!--/#blog-->

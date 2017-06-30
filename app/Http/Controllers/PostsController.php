@@ -179,4 +179,14 @@ class PostsController extends Controller
 
         return 'Successfully deleted the post!';
     }
+
+    public function archieve()
+    {
+        //
+        $posts_by_date = Post::all()->groupBy(function($date) {
+                return Carbon::parse($date->created_at)->format('Y-m');
+        });
+
+        return $posts_by_date;
+    }
 }

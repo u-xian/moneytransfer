@@ -10,11 +10,12 @@
     <link href="{{ asset('/css/bootstrap.min.css') }}" rel="stylesheet">
 	<link rel="stylesheet" href="{{ asset('/css/font-awesome.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('/css/jquery.bxslider.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ asset('/css/isotope.css') }}" media="screen" />	
+	<link rel="stylesheet" href="{{ asset('/css/isotope.css') }}" type="text/css" media="screen" />	
 	<link rel="stylesheet" href="{{ asset('/css/animate.css') }}">
 	<link rel="stylesheet" href="{{ asset('/js/fancybox/jquery.fancybox.css') }}" type="text/css" media="screen" />
-	<link href="{{ asset('/css/prettyPhoto.css') }}" rel="stylesheet" />
-	<link href="{{ asset('/css/style.css') }}" rel="stylesheet" />	
+	<link rel="stylesheet" href="{{ asset('/css/prettyPhoto.css') }}" />
+    <link rel="stylesheet" href="{{ asset('/css/bootstrap-datetimepicker.min.css') }}" />
+	<link rel="stylesheet" href="{{ asset('/css/style.css') }}"/>	
     <!-- =======================================================
         Theme Name: Multi
         Theme URL: https://bootstrapmade.com/multi-responsive-bootstrap-template/
@@ -28,7 +29,7 @@
 	<div ng-include src="'views/includes/footer.html'"></div>
 	
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->	
-    <script src="js/jquery-2.1.1.min.js"></script>	
+    <script src="{{ asset('/js/jquery-2.1.1.min.js') }} "></script>	
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{{ asset('/js/bootstrap.min.js') }}"></script>
 	<script src="{{ asset('/js/wow.min.js') }}"></script>
@@ -37,6 +38,9 @@
 	<script src="{{ asset('/js/jquery.bxslider.min.js') }}"></script>
 	<script src="{{ asset('/js/jquery.prettyPhoto.js') }}"></script>
 	<script src="{{ asset('/js/jquery.isotope.min.js') }} "></script> 
+    <script src="{{ asset('/js/moment.js') }}"></script>
+    <script src="{{ asset('/js/transition.min.js') }}"></script>
+    <script src="{{ asset('/js/bootstrap-datetimepicker.min.js') }}"></script>
 	<script src="{{ asset('/js/functions.js') }}"></script>
 	
 	<!-- Angular JS -->

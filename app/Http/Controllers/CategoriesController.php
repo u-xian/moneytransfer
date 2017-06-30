@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+Use DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\BlogCategory;
@@ -20,8 +21,12 @@ class CategoriesController extends Controller
     public function index()
     {
         //
-        $categories = BlogCategory::all();
+        //$categories = BlogCategory::all();
+        
+        $categories = DB::select('select a.category,count(b.id) as ct  from blog_categories a, posts b  where a.id=b.category_id group by a.category');
+
         return $categories;
+
     }
 
     /**

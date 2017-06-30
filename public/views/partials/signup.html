@@ -1,0 +1,50 @@
+<div class="container"> 
+<div id="signupbox" style=" margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">Sign Up</div>
+                <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="#login">Sign In</a></div>
+            </div>  
+            <div class="panel-body" ng-controller="signupController">
+                    <form  class="form-horizontal" method="post" >
+                        <div id="div_id_email" class="form-group required">
+                            <label for="id_email" class="control-label col-md-4  requiredField"> E-mail<span class="asteriskField">*</span> </label>
+                            <div class="controls col-md-8 ">
+                                <input class="input-md emailinput form-control" id="id_email" name="email" placeholder="Your current email address" style="margin-bottom: 10px" type="email" ng-model="users.email"/>
+                            </div>     
+                        </div>
+                        <div id="div_id_password1" class="form-group required">
+                            <label for="id_password1" class="control-label col-md-4  requiredField">Password<span class="asteriskField">*</span> </label>
+                            <div class="controls col-md-8 "> 
+                                <input class="input-md textinput textInput form-control" id="id_password1" name="password1" placeholder="Create a password" style="margin-bottom: 10px" type="password" ng-model="users.password"/>
+                            </div>
+                        </div>
+                        <div id="div_id_password2" class="form-group required">
+                             <label for="id_password2" class="control-label col-md-4  requiredField"> Re:password<span class="asteriskField">*</span> </label>
+                             <div class="controls col-md-8 ">
+                                <input class="input-md textinput textInput form-control" id="id_password2" name="password2" placeholder="Confirm your password" style="margin-bottom: 10px" type="password" ng-model="users.c_password"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="controls col-md-offset-4 col-md-8 ">
+                                <div id="div_id_terms" class="checkbox required">
+                                    <label for="id_terms" class=" requiredField">
+                                         <input class="input-ms checkboxinput" id="id_terms"  style="margin-bottom: 10px" type="checkbox" name="tos" value="tos" ng-model="users.tos"/>
+                                         Agree with the <a href="#helpsupport" style="color: #ED502E">terms and conditions</a>
+                                    </label>
+                                </div> 
+                                    
+                            </div>
+                        </div> 
+                        <div class="form-group"> 
+                            <div class="aab controls col-md-4 "></div>
+                            <div class="controls col-md-8 ">
+                                <button id="btn-signup" type="button" class="btn btn-primary" ng-click="save()"><i class="icon-hand-right"></i> &nbsp Sign Up</button>
+                            </div>
+                        </div> 
+                    </form>
+            </div>
+        </div>
+    </div> 
+</div>
+ </div>        

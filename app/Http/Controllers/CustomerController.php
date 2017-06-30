@@ -20,7 +20,7 @@ class CustomerController extends Controller
     {
         //
         $customers = DB::table('Customers')
-                    ->select('id','first_name','last_name','sex', 'email','phone','dob','nationality','status')
+                    ->select('id','first_name','last_name','sex', 'nid','phone','dob','nationality','status','user_id')
                     ->get();
         return $customers;
     }
@@ -48,27 +48,28 @@ class CustomerController extends Controller
             'first_name' => 'required',
             'last_name' => 'required',
             'sex' => 'required',
-            'email' => 'required|email',
             'phone' => 'required',
-            'dob' => 'required',
+            'year' => 'required',
+            'month' => 'required',
+            'day' => 'required',
             'nationality' => 'required',
-            'password' => 'required',
-            'c_password' => 'required|same:password',
+            'nid' => 'required',
+            'user_id' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error'=>$validator->errors()], 401);            
         }
-
+      $dob = $request->year.'-'.$request->month.'-'.$request->day;
       $input = [
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'sex' => $request->sex,
-            'email' => $request->email,
             'phone' => $request->phone,
-            'dob' => $request->dob,
+            'dob' => $dob,
             'nationality' => $request->nationality,
-            'password' => bcrypt($request->password) ,
+            'nid' => $request->nid,
+            'user_id' => $request->user_id,
         ];
         $customer = Customers::create($input);
 
@@ -85,7 +86,7 @@ class CustomerController extends Controller
     {
         //
         $customer = Customers::where('id', '=', $id)
-                         ->select('id','first_name','last_name','sex', 'email','phone','dob','nationality','status')
+                         ->select('id','first_name','last_name','sex','phone','dob','nationality','status')
                          ->first();
 
         if(!$customer){
@@ -124,11 +125,10 @@ class CustomerController extends Controller
             'first_name' => 'required',
             'last_name' => 'required',
             'sex' => 'required',
-            'email' => 'required|email',
             'phone' => 'required',
             'dob' => 'required',
+            'nid' => 'required',
             'nationality' => 'required',
-            'status' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -140,11 +140,10 @@ class CustomerController extends Controller
         $customer->first_name  = $request->first_name;
         $customer->last_name  = $request->last_name;
         $customer->sex  = $request->sex;
-        $customer->email  = $request->email;
         $customer->phone  = $request->phone;
         $customer->dob  = $request->dob;
+        $customer->nid  = $request->nid;
         $customer->nationality  = $request->nationality;
-        $customer->status  = $request->status;
         $customer->save(); 
  
         return Response::json([
