@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="{{ asset('/js/fancybox/jquery.fancybox.css') }}" type="text/css" media="screen" />
 	<link rel="stylesheet" href="{{ asset('/css/prettyPhoto.css') }}" />
     <link rel="stylesheet" href="{{ asset('/css/bootstrap-datetimepicker.min.css') }}" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.4.0/css/normalize.css"/>
 	<link rel="stylesheet" href="{{ asset('/css/style.css') }}"/>	
     <!-- =======================================================
         Theme Name: Multi
@@ -46,7 +47,22 @@
 	<!-- Angular JS -->
     <script src="{{ asset('/js/angular.min.js') }}"></script> 
     <script src="{{ asset('/js/angular-route.min.js') }}"></script>
+    <script src="{{ asset('/js/angular-animate.js') }} "></script>
+    <script src="{{ asset('/js/angular-sanitize.js') }} "></script>
+    <script src="{{ asset('/js/angular-messages.js') }} "></script>
+    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script src=" {{ asset('/js/angular-payments.js') }}"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-spinner/0.5.1/angular-spinner.js"></script>
+
+ 
+    
+    <script src="{{ asset('/js/ui-bootstrap-tpls-2.5.0.min.js') }} "></script>
+    <script src="{{ asset('/app/Authenticatecontrollers.js') }}"></script>
+    <script src="{{ asset('/app/BlogControllers.js') }}"></script>
+    <script src="{{ asset('/app/Services.js') }}"></script>
     <script src="{{ asset('/app/app.js') }}"></script>
+    
 	
     
 </body>

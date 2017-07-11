@@ -24,7 +24,7 @@ class PostsController extends Controller
 
         $post= Post::select(['id','url','title','description','content','image','author_id','created_at'])
                 ->with(['author' =>function ($q) {
-                            $q->select(['id','first_name','last_name']);
+                            $q->select(['id']);
                         }, 
                         'comments' => function ($query) {
                             $query->select(['id','body','created_at','names','email','on_post']);
@@ -88,7 +88,7 @@ class PostsController extends Controller
 
         $post= Post::select(['id','url','title','description','content','image','author_id','created_at'])
                 ->with(['author' =>function ($q) {
-                            $q->select(['id','first_name','last_name']);
+                            $q->select(['id']);
                         }, 
                         'comments' => function ($query) {
                             $query->select(['id','body','created_at','names','email','on_post']);

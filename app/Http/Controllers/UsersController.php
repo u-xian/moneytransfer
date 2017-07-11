@@ -61,14 +61,13 @@ class UsersController extends Controller
         //$input['phone'] = $phone_complete;
 
         //$user = Sentinel::registerAndActivate($input);
-        $user = Sentinel::register($input);
-        /*$outputs = [
-                'first_name'=> $user['first_name'],
-                'last_name'=> $user['last_name'],
+        $user = Sentinel::registerAndActivate($input);
+        $outputs = [
+                'id' => $user['id'],
                 'email' => $user['email'],
                 'status' => $user['status'],
-            ];*/
-        return $user;
+            ];
+        return $outputs;
     }
 
     /**
@@ -160,12 +159,12 @@ class UsersController extends Controller
         if ($activation = Activation::completed($user))
         {
             // User has completed the activation process
-            return Response::json(['status' => '1']); 
+            return Response::json(['status' => true]); 
         }
         else
         {
             // Activation not found or not completed
-            return Response::json(['status' => '0']); 
+            return Response::json(['status' => false]); 
         }         
     }
 

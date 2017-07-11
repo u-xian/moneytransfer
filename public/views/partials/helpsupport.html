@@ -13,6 +13,13 @@
 	
 	<div class="container">
 		<div class="col-md-7">
+		<form name="demoForm">
+  <input name="amount" type="number" ng-model="amount" max="100">
+  <div ng-messages="demoForm.amount.$error">
+    <div ng-message="number">Should be a number</div>
+    <div ng-message="max">The number is too large.</div>
+  </div>
+</form>
 			<div class="map">				
 				<div id="google-map" data-latitude="40.713732" data-longitude="-74.0092704"></div>
 			</div>

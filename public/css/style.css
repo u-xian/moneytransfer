@@ -1085,3 +1085,20 @@ a.adisabled {
 a.adisabled:hover { text-decoration: none; }
 a.adisabled:focus { text-decoration: none; }
 a.adisabled:active { text-decoration: none; }
+
+.msg {
+  color: red;
+  font-weight: bold;
+  padding: 0;
+  margin: 5px 0;
+}
+
+ .ng-invalid {
+        border-color: #f00 !important;
+  }
+
+  
+
+     
+
+      

@@ -21,6 +21,7 @@ Route::resource('user', 'UsersController');
 Route::get('checkuserstatus/{id}', 'UsersController@isActivated');
 Route::get('activate/{id}', 'UsersController@activate');
 Route::resource('customer', 'CustomerController');
+Route::get('isCustomer/{id}', 'CustomerController@isCustomer');
 Route::resource('currency', 'CurrenciesController');
 Route::resource('country', 'CountriesController');
 Route::resource('category', 'CategoriesController');

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\User;
 use Cartalyst\Sentinel\Native\Facades\Sentinel;
+use Cartalyst\Sentinel\Checkpoints\NotActivatedException;
 use Response;
 
 class AuthenticateController extends Controller
@@ -19,34 +20,35 @@ class AuthenticateController extends Controller
 
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        try{
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'password' => 'required',
+                ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error'=>$validator->errors()], 401);            
-        }
-        
-        $credentials = [
+            if ($validator->fails()) {
+                return response()->json(['error'=>$validator->errors()], 401);            
+            }
+
+            $credentials = [
             'email' => $request->input('email'),
             'password' => $request->input('password'),
-        ];
-        
-        //check login details
-        if($user = Sentinel::authenticate($credentials))
-        {
-            $outputs = [
-                'id'=> $user['id'],
-                'email' => $user['email'],
-                'status' => $user['status'],
-                
             ];
-            return $outputs;
-        }
-        else
-        {
-            echo 'Not Logged';
+
+        //check login details
+            if($user = Sentinel::authenticate($credentials))
+            {
+                $outputs = [
+                    'id'=> $user['id'],
+                    'email' => $user['email'],
+                    'status' => true,
+                    'message'=>'Account activated.'
+                ];
+                return $outputs;
+            }
+        }     
+        catch (NotActivatedException $e) {
+            return Response::json(['status' => false,'message'=>'Account not activated.']); 
         }
     }
 

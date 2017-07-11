@@ -19,7 +19,7 @@ class CurrenciesController extends Controller
     {
         //
         $currencies = DB::table('Currencies')
-                    ->select('id','country','symbol','exchange_rate')
+                    ->select('id','country','symbol','exchange_rate','phonecode')
                     ->get();
         return $currencies;
     }

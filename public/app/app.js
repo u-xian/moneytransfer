@@ -1,18 +1,25 @@
-var app = angular.module('MoneyTransferApp', ['ngRoute']);
-        app.constant('API_URL', 'http://moneytransfer.dev:8082/api/');
-        app.factory('AuthenticationService', function () {
-  // private state
-  var isAuthenticated = false;
+'use strict';
 
-  // getter and setter
-  var authenticate = function (state) {
-    if (typeof state !== 'undefined') { isAuthenticated = state; }
-    return isAuthenticated;
-  };
+Stripe.setPublishableKey('pk_test_aj305u5jk2uN1hrDQWdH0eyl');
 
-  // expose getter-setter
-  return { isAuthenticated: authenticate };
-});
+var app = angular.module('MoneyTransferApp', ['ngRoute',
+                                              'ngAnimate',
+                                              'angularSpinner',
+                                              'ngMessages',
+                                              'angularPayments', 
+                                              'ui.bootstrap',
+                                              'Authenticatecontrollers',
+                                              'Blogcontrollers',
+                                              'services']);
+
+app.constant('API_URL', 'http://moneytransfer.dev:8082/api/');
+
+app.run(["userService", function(userService) {
+  var user = userService.GetCurrentUser();
+  if (user) {
+    userService.SetCurrentUser(user);
+  }
+}]);
 
 
  
@@ -60,14 +67,12 @@ var app = angular.module('MoneyTransferApp', ['ngRoute']);
 			})
         .when('/sendmoney/:id', {
                 templateUrl : 'views/partials/home_sendmoney.html',
-                controller  : 'sendMOneyController'
+                controller  : 'sendMOneyHomeController'
             })
         .when('/transfermoney', {
                 templateUrl : 'views/partials/transfermoney.html',
                 controller  : 'transferMoneyController'
-            })
-
-		
+            })	
 		
 		.otherwise({
                 redirectTo:'/'
@@ -75,75 +80,8 @@ var app = angular.module('MoneyTransferApp', ['ngRoute']);
 	});
 
 
-	app.controller('mainController', function($scope, $http, $window, API_URL,AuthenticationService,$location) {
-        $scope.$watch('globals', function(newVal, oldVal) {
-            $scope.isAuthenticated = !AuthenticationService.isAuthenticated;
-        }, true);
-
-    });
-    
-    app.controller('headerController', function ($scope, AuthenticationService,$window,$location) {
-         $scope.isAuthenticated = false;
-        $scope.isAuthenticated = AuthenticationService.isAuthenticated;
-
-        $scope.logout = function(){
-            $window.sessionStorage.removeItem('id');
-            AuthenticationService.isAuthenticated(false);
-            $location.path('/');       
-        }
-
-    });
-
-
-    app.controller('loginController', function($scope, $rootScope, $http, $window,$location, API_URL,AuthenticationService) {
-        $scope.login = function() {
-            var url = API_URL + "login";
-            $http({
-                method: 'POST',
-                url: url,
-                data: $.param($scope.log),
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).success(function(response) {
-                $window.sessionStorage.setItem("id",response.id);
-                $rootScope.currentUser = response;
-                $scope.isAuthenticated = AuthenticationService.isAuthenticated(true);
-                console.log($scope.isAuthenticated);
-                //$('#myModal').modal('hide');
-                var id = $rootScope.currentUser.id;
-                $location.path('/sendmoney/'+id);
-            }).error(function(response) {
-                console.log(response);
-                alert('An error has occured. Please check the log for details');
-            });
-        }
-    });
-    
-    app.controller('signupController', function($scope, $rootScope, $window, $http, API_URL,$location) {
-        $scope.save = function() {
-        var url = API_URL + "user";
-        $http({
-            method: 'POST',
-            url: url,
-            data: $.param($scope.users),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).success(function(response) {
-            //location.reload();
-            $rootScope.currentUser = response;
-            $location.path('/sendmoney/'+ response.id);
-            //$('#customerModal').modal('show');
-        }).error(function(response) {
-            console.log(response);
-            alert('An error has occured. Please check the log for details');
-        });
-    }
-
-    });
-
-    app.controller('logoutController', function($scope, $http,$window,$location,AuthenticationService) {
-         $window.sessionStorage.removeItem('id');
-         AuthenticationService.isAuthenticated(false);
-         $location.path('/');
-
+	app.controller('mainController', function($scope, $http) {
+       
     });
 
     app.controller('howitworksController', function($scope, $http) {
@@ -158,7 +96,7 @@ var app = angular.module('MoneyTransferApp', ['ngRoute']);
 
     });
 
-    app.controller('sendMOneyController', function($scope, $http, $routeParams, API_URL,$window) {
+    app.controller('sendMOneyHomeController', function($scope, $http, $routeParams, API_URL,$window,CheckStatusService,CurrencyService) {
         //Get the categories
         $scope.TransactionsTable = false;
         $scope.CustomerForm = false;
@@ -185,35 +123,33 @@ var app = angular.module('MoneyTransferApp', ['ngRoute']);
            }
         }
 
-       
-
-
 
         $scope.param = $routeParams.id;
         var id = $scope.param;
+        $scope.userid = $scope.param;
 
-        $http.get(API_URL + 'checkuserstatus/' + id)
-            .success(function(response) {
-                $scope.isactivated = response;
+        CheckStatusService.getStatus(API_URL,id).then(function(d) { //2. so you can use .then()
+            $scope.data = d;
+            if($scope.data)
+            {
+                $scope.TransactionsTable = true;
+                $scope.CustomerForm = false;
                 $scope.usable = true;
-                var status = $scope.isactivated.status;
-                if (status == 1 ){
-                    $scope.TransactionsTable = true;
-                    $scope.CustomerForm = false;
-                    $scope.usable = true;
-                }
-                else{
-                    $scope.TransactionsTable = false;
-                    $scope.CustomerForm = true;
-                    $scope.usable = false;
-                }
+            }
+            else
+            {
+                $scope.TransactionsTable = false;
+                $scope.CustomerForm = true;
+                $scope.usable = false;
+            }
         });
-       
 
+        
 
+        
     });
 
-     app.controller('customerController', function($scope, $rootScope, $window, $http, API_URL,$location) {
+     app.controller('customerController', function($scope, $rootScope, $window, $http, API_URL,$location,CheckStatusService) {
         $scope.years =[];
         $scope.months =[];
         $scope.days =[];
@@ -243,28 +179,24 @@ var app = angular.module('MoneyTransferApp', ['ngRoute']);
                 url: url,
                 data: $.param($scope.record),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).success(function(response) {
-                $http.get(API_URL + 'activate/' + $scope.record.user_id)
-                    .success(function(response) {
-                        $http.get(API_URL + 'checkuserstatus/' + $scope.record.user_id)
-            .success(function(response) {
-                $scope.isactivated = response;
-                $scope.usable = true;
-                var status = $scope.isactivated.status;
-                if (status == 1 ){
-                    $scope.TransactionsTable = true;
-                    $scope.CustomerForm = false;
-                    $scope.usable = true;
-                }
-                else{
-                    $scope.TransactionsTable = false;
-                    $scope.CustomerForm = true;
-                    $scope.usable = false;
-                }
-        });
-                });
-                location.reload();
-            }).error(function(response) {
+            }).then(function onSuccess(response) {
+                CheckStatusService.getStatus(API_URL,response.data.userid).then(function(d) { //2. so you can use .then()
+                    $scope.data = d;
+                    if($scope.data)
+                    {
+                        $scope.TransactionsTable = true;
+                        $scope.CustomerForm = false;
+                        $scope.usable = true;
+                    }
+                    else
+                    {
+                        $scope.TransactionsTable = false;
+                        $scope.CustomerForm = true;
+                        $scope.usable = false;
+                    }
+               });
+
+            }).catch(function onError(response) {
                 console.log(response);
                 alert('An error has occured. Please check the log for details');
             });
@@ -273,110 +205,57 @@ var app = angular.module('MoneyTransferApp', ['ngRoute']);
 
     });
 
-     app.controller('transferMoneyController', function($scope, $http) {
+    app.controller('transferMoneyController', function($scope, $http,API_URL,CurrencyService) {
+        
+         $scope.onSubmit = function () {
+            $scope.processing = true;
+        };
 
-    });
-
-    app.controller('blogController', function($scope, $http, API_URL) {
-        //Format Date 
-        $scope.getDateFormat = function(timestamp) {
-            return new Date(timestamp);
-        }
-        //retrieve blog post listing from API
-        $scope.currentPage ;
-        $scope.getPosts = function(pageNumber){
-            if(pageNumber===undefined){
-                pageNumber = '1';
+        $scope.stripeCallback = function (code, result) {
+            $scope.processing = false;
+            $scope.hideAlerts();
+            if (result.error) {
+                $scope.stripeError = result.error.message;
+            } else {
+                $scope.stripeToken = result.id;
             }
-            $http.get(API_URL + "blogpost?page="+pageNumber)
-                .success(function(response) {
-                    $scope.blogposts = response.data;
-                    currentPage = response.current_page;
-                    $scope.totalPages   = response.last_page;
-        
-                    // Pagination Range
-                    var pages = [];
+        };
 
-                    for(var i=1;i<=response.last_page;i++) {          
-                        pages.push(i);
-                    }
+        $scope.hideAlerts = function () {
+            $scope.stripeError = null;
+            $scope.stripeToken = null;
+        };
 
-                    $scope.range = pages; 
-                });
-        }
-
-        $scope.nextPage = function() {
-                if (currentPage < $scope.totalPages) {
-                    currentPage++;
-                    $scope.getPosts(currentPage);
-                }
-            };
-        $scope.prevPage = function() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    $scope.getPosts(currentPage);
-                }
-            };
-        $scope.getPosts(1);
+        CurrencyService.getCurrency(API_URL).then(function(d) { //2. so you can use .then()
+            $scope.currencies = d;
+        });
        
-       //Get the categories
-        $http.get(API_URL + 'category')
-            .success(function(response) {
-                $scope.categories = response;
-        });
 
-       //Get the archieve 
-       $http.get(API_URL + 'archievepost')
-            .success(function(response) {
-                $scope.archieve  = response;
-                console.log($scope.archieve);
-        });
-
-
-
-
-    });
-
-    app.controller('getPostController', function($scope, $http, $routeParams,API_URL) {
-        //Format Date 
-        $scope.getDateFormat = function(timestamp) {
-            return new Date(timestamp);
-        }
-
-    	$scope.param = $routeParams.id;
-    	var id = $scope.param;
-
-    	$http.get(API_URL + 'blogpost/' + id)
-            .success(function(response) {
-                $scope.posts = response;
-        });
-        
-        $scope.getComments = function(pid){
-            $http.get(API_URL + 'blogpostcomment/' + pid)
-                .success(function(response) {
-                    $scope.comments = response;
+        $scope.status = {
+            isFirstOpen: true,
+            isFirstOpen2: true,
+        };
+        $scope.rates = {};
+        $http.get(API_URL+'currency')
+            .then(function(res) {
+                $scope.rates = res.data;
+                $scope.forExConvert();
             });
-        }
-        $scope.getComments(id);
-
-        $scope.saveComment = function() {
-            $scope.commentPost['on_post'] = id;
-            var url = API_URL + "blogpostcomment";
-            $http({
-                method: 'POST',
-                url: url,
-                data: $.param( $scope.commentPost),
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).success(function(response) { 
-                  $scope.getComments(id);
-                  $scope.personForm.$setPristine();
-                }).error(function(response) {
-                    alert('An error has occured. Please check the log for details');
+        $scope.forExConvert = function() {
+            angular.forEach($scope.rates, function(value, key) {
+                    if(value.phonecode == $scope.countrycode){
+                        $scope.toValue = $scope.amount / value.exchange_rate;
+                        $scope.toValue = Math.round($scope.toValue);
+                        console.log($scope.toValue);
+                    }   
                 });
+        };
 
-        }
-      
+        
+     
     });
+
+    
 
     app.controller('usersController', function($scope, $window, $http, API_URL,$location) {
     	//save new record / update existing record
@@ -387,11 +266,11 @@ var app = angular.module('MoneyTransferApp', ['ngRoute']);
             url: url,
             data: $.param($scope.users),
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).success(function(response) {
+        }).then(function onSuccess(response) {
             //location.reload();
             $('#myModal').modal('hide');
             $location.path('/sendmoney');
-        }).error(function(response) {
+        }).catch(function onError(response) {
             console.log(response);
             alert('An error has occured. Please check the log for details');
         });

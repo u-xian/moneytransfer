@@ -1,5 +1,5 @@
 <section id="blog" class="container">
-        <div class="blog" ng-controller="sendMOneyController">
+        <div class="blog" ng-controller="sendMOneyHomeController">
             <div class="row">
                 <div class="col-md-2">
                    <div class="blog-item">
@@ -11,7 +11,7 @@
                     </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-10">
                   <div class="panel panel-default" ng-show="TransactionsTable">
                     <!-- Default panel contents -->
                     <div class="panel-heading"><b>Transactions</b></div>
@@ -70,7 +70,6 @@
                                 <input class="input-md textinput textInput form-control" id="id_name" name="name" placeholder="First name" style="margin-bottom: 10px" type="text"  ng-model="record.first_name"/>
                             </div>
                         </div>
-
                         <div id="div_id_name" class="form-group required"> 
                             <label for="id_name" class="control-label col-md-4  requiredField"> Last name<span class="asteriskField">*</span> </label> 
                             <div class="controls col-md-8 "> 
@@ -79,14 +78,23 @@
                         </div>
                         <div id="div_id_name" class="form-group required"> 
                             <label for="id_name" class="control-label col-md-4  requiredField"> Phone Number<span class="asteriskField">*</span> </label> 
-                            <div class="controls col-md-8 "> 
-                                <input class="input-md textinput textInput form-control" id="id_name" name="name" placeholder="Your Phone Number" style="margin-bottom: 10px" type="text"  ng-model="record.phone"/>
+                            <div class="controls col-md-8 ">
+                               <div class="input-group">
+                                <div class="input-group-btn" style="width:200px">
+                                  <select id="countrycode" name="countrycode" class="form-control" ng-model="record.prefix_code">
+                                    <option value="250">Rwanda (+250)</option>
+                                    <option value="256">Uganda (+256)</option>
+                                    <option value="254">Kenya (+254)</option>
+                                  </select>
+                                </div><!-- /btn-group -->
+                                <input type="text" class="form-control" ng-model="record.phonenumber" >
+                              </div><!-- /input-group -->
                             </div>
                         </div>
                         <div id="div_id_name" class="form-group required"> 
                             <label for="id_name" class="control-label col-md-4  requiredField"> ID Number<span class="asteriskField">*</span> </label> 
                             <div class="controls col-md-8 "> 
-                                <input class="input-md textinput textInput form-control" id="id_name" name="name" placeholder="Your ID Number" style="margin-bottom: 10px" type="text" ng-model="record.nid"/>
+                                <input class="input-md textinput textInput form-control" id="id_name" name="name" placeholder="Your ID Number" style="margin-bottom: 10px" type="text"  ng-model="record.nid"/>
                             </div>
                         </div>
                         <div id="div_id_gender" class="form-group required">
@@ -99,29 +107,23 @@
                         <div id="div_id_company" class="form-group required date"> 
                             <label for="id_company" class="control-label col-md-4  requiredField"> Date of Birth<span class="asteriskField">*</span> </label>
                             <div class="controls col-md-8 "> 
-                                 <div class="row">
-                                      <div class="col-xs-2">
-                                        <div class="form-group">
-                                          <select class="form-control" ng-model="record.year">
-                                            <option value="{{year.yvrb}}" ng-repeat="year in years">{{year.yvrb}}</option>
-                                          </select>
-                                        </div>
-                                      </div>
-                                      <div class="col-xs-2">
-                                        <div class="form-group">
-                                          <select class="form-control" ng-model="record.month">
-                                            <option value="{{month.mvrb}}" ng-repeat="month in months">{{month.mvrb}}</option>
-                                          </select>
-                                        </div>
-                                      </div>
-                                      <div class="col-xs-2">
-                                        <div class="form-group">
-                                          <select class="form-control" ng-model="record.day">
-                                            <option value="{{day.dvrb}}" ng-repeat="day in days">{{day.dvrb}}</option>
-                                          </select>
-                                        </div>
-                                      </div>
-                                 </div>
+                                <div class="input-group">
+                                <div class="input-group-btn" style="width:200px">
+                                  <select class="form-control" ng-model="record.year">
+                                    <option value="{{year.yvrb}}" ng-repeat="year in years">{{year.yvrb}}</option>
+                                  </select>
+                                </div><!-- /btn-group -->
+                                <div class="input-group-btn" style="width:200px">
+                                  <select class="form-control" ng-model="record.month">
+                                    <option value="{{month.mvrb}}" ng-repeat="month in months">{{month.mvrb}}</option>
+                                  </select>
+                                </div><!-- /btn-group -->
+                                <div class="input-group-btn" style="width:200px">
+                                  <select class="form-control" ng-model="record.day">
+                                    <option value="{{day.dvrb}}" ng-repeat="day in days">{{day.dvrb}}</option>
+                                  </select>
+                                </div><!-- /btn-group -->
+                              </div><!-- /input-group -->
                             </div>
                         </div> 
                         <div id="div_id_catagory" class="form-group required">
@@ -133,7 +135,7 @@
                         <div class="form-group"> 
                             <div class="aab controls col-md-4 "></div>
                             <div class="controls col-md-8 ">
-                                <input type="hidden" ng-model="record.user_id" value="{{currentUser.id}}" ng-init="record.user_id=currentUser.id"/>
+                                <input type="hidden" ng-model="record.user_id" value="{{userid}}" ng-init="record.user_id=userid"/>
                                 <button class="btn btn-xs btn btn-primary btn btn-info pull-right" type="submit" ng-click="saveCustomer()">Submit</button>
                             </div>
                         </div> 
@@ -142,54 +144,343 @@
                       </div>
                     </div>
                     <!-- Panel Send Money-->
-                    <div class="panel panel-default" ng-show="TransferMoneyForm" >
-                      <div class="panel-heading">
-                        <h3 class="panel-title">Send Money</h3>
-                      </div>
-                      <div class="panel-body">
-                        <label  class="control-label">Receiver Firstname and Lastname</label>
-                        <div class="row">
-                            <div class="col-md-3">
-                              <div class="form-group form-group-sm">
-                                <input type="text" class="form-control" id="firstname" placeholder="Firstname">
-                              </div>
-                            </div>
-                            <div class="col-md-3">
-                              <div class="form-group form-group-sm">
-                                <input type="text" class="form-control" id="lastname" placeholder="Last Name">
-                              </div>
-                            </div>
-                        </div>
-                        <label  class="control-label"> Receiver Number</label>
-                        <div class="row">
-                            <div class="col-md-3">
-                              <div class="form-group form-group-sm">
-                                <select class="form-control">
-                                            <option value="93">AFGHANISTAN(+93)</option>
-                                            <option value="355">ALBANIA(+355)</option>
-                                            <option value="213">ALGERIA(+213)</option>
-                                        </select>
-                              </div>
-                            </div>
-                            <div class="col-md-3">
-                              <div class="form-group form-group-sm">
-                                <input type="text" class="form-control"  placeholder="Phone Number">
-                              </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                              <div class="form-group form-group-sm">
-                              <label  class="control-label">Amount to receive</label>
-                                <input type="text" class="form-control"  placeholder="Amount">
-                              </div>
-                            </div>
-                        </div>
-                      </div>
-                      <div class="panel-footer">
-                         <button id="btn-signup" type="button" class="btn btn-primary" ng-click="save()"><i class="icon-hand-right"></i>Send the Money</button>
-                      </div>
+                    <div ng-show="TransferMoneyForm" >
+                    <div class="panel panel-info" >
+                        <div class="panel-heading">
+                          <h3 class="panel-title">Pick Transfer Type</h3>                      
+                          <label class="radio-inline">
+                            <input type="radio"  value="c2b"  style="margin-bottom: 10px" ng-model="payment_type">Card to Bank
+                          </label>
+                          <label class="radio-inline"> 
+                            <input type="radio" value="c2m"  style="margin-bottom: 10px" ng-model="payment_type">Card to Mobile
+                          </label>
+                          <label class="radio-inline"> 
+                            <input type="radio"  value="m2b"  style="margin-bottom: 10px" ng-model="payment_type">Mobile to Bank
+                          </label>
+                          <label class="radio-inline"> 
+                            <input type="radio" value="m2m"  style="margin-bottom: 10px" ng-model="payment_type">Mobile to Mobile
+                          </label>
+                         </div>
                     </div>
+                    <div ng-switch="payment_type">
+                      <div ng-switch-when="c2b">
+                        <div class="panel panel-info" >
+                          <div class="panel-heading">
+                            <h3 class="panel-title">Card to Bank</h3>                      
+                          </div>
+                          <div class="panel-body" ng-controller="transferMoneyController">
+                            <form name="c2bForm" stripe-form="stripeCallback" ng-submit="onSubmit()" data-abide>
+                              <div ng-if="processing" us-spinner></div>
+                                <alert ng-if="stripeError" class="alert-danger" type="'alert'" close="hideAlerts()">                           
+                                  <div class="alert alert-danger alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <strong>Error!</strong> Stripe returned an error: {{stripeError}}
+                                  </div>
+                                </alert>
+                                <alert ng-if="stripeToken" class="alert-success" close="hideAlerts()">
+                                  <div class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <strong>Success!</strong> Stripe successfully acquired! Token: {{stripeToken}}
+                                  </div>
+                                </alert>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                     <div class='form-row'>
+                                          <div class='col-xs-12 form-group required'>
+                                            <label class='control-label'>Card Name</label>
+                                            <input class='form-control' size='4' type='text' id="name"  name="cardname" required>
+                                          </div>
+                                      </div>
+                                      <div class='form-row'>
+                                          <div class='col-xs-12 form-group card required'>
+                                            <label class='control-label'>Card Number</label>
+                                            <input autocomplete='off'  size='20' type='text' id="cardn"   name="cardnumber" ng-model="number" payments-validate="card" payments-format="card" payments-type-model="type" class="form-control" />
+                                          </div>
+                                      </div>
+                                      <div class='form-row'>
+                                          <div class='col-xs-6 form-group cvc required'>
+                                            <label class='control-label'>CVC</label>
+                                            <input autocomplete='off' class='form-control card-cvc' placeholder='ex. 311' size='4' type='text' id="cvc" ng-model="cvc" payments-validate="cvc" payments-format="cvc" payments-type-model="type">
+                                          </div>
+                                          <div class='col-xs-6 form-group expiration required'>
+                                            <label class='control-label'>Expiration</label>
+                                            <input class='form-control card-expiry-month' placeholder='MM/YYYY' size='2' type='text' id="exp" ng-model="expiry" payments-validate="expiry" payments-format="expiry" >
+                                          </div>
+                                        </div>
+                                        <div class='form-row'>
+                                          <div class='col-xs-12 form-group card required'>
+                                            <label class='control-label'>Amount</label>
+                                            <input autocomplete='off' class='form-control card-number' size='20' type='text'>
+                                          </div>
+                                        </div>     
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class='form-row'>
+                                        <div class='col-xs-12 form-group required'>
+                                          <label class='control-label'>Receiver Bank Account Name</label>
+                                          <input class='form-control' size='4' type='text'>
+                                        </div>
+                                    </div>
+                                    <div class='form-row'>
+                                        <div class='col-xs-12 form-group card required'>
+                                          <label class='control-label'>Receiver Bank Account Number</label>
+                                          <input autocomplete='off' class='form-control card-number' size='20' type='text'>
+                                        </div>
+                                    </div>
+                                    <div class='form-row'>
+                                          <div class='col-md-12'>
+                                            <div class='form-control total btn btn-info'>
+                                              Total:
+                                              <span class='amount'>$300</span>
+                                            </div>
+                                          </div>
+                                    </div>
+                                    <div class='form-row'>
+                                      <div class='col-md-12 form-group'>
+                                        <button class='form-control btn btn-primary submit-button' type='submit'>Send »</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                       <div ng-switch-when="c2m">
+                        <div class="panel panel-info" >
+                          <div class="panel-heading">
+                            <h3 class="panel-title">Card to Mobile</h3>                      
+                          </div>
+                          <div class="panel-body" ng-controller="transferMoneyController">
+                            <form name="c2mForm" stripe-form="stripeCallback" ng-submit="onSubmit()" data-abide>
+                              <div ng-if="processing" us-spinner></div>
+                                <alert ng-if="stripeError" class="alert-danger" type="'alert'" close="hideAlerts()">                           
+                                  <div class="alert alert-danger alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <strong>Error!</strong> Stripe returned an error: {{stripeError}}
+                                  </div>
+                                </alert>
+                                <alert ng-if="stripeToken" class="alert-success" close="hideAlerts()">
+                                  <div class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <strong>Success!</strong> Stripe successfully acquired! Token: {{stripeToken}}
+                                  </div>
+                                </alert>
+                                <div class="row" >
+                                  <div class="col-md-6">
+                                     <div class='form-row'>
+                                          <div class='col-xs-12 form-group required'>
+                                            <label class='control-label'>Card Name</label>
+                                            <input class='form-control' size='4' type='text' id="name"  name="cardname" required>
+                                          </div>
+                                      </div>
+                                      <div class='form-row'>
+                                          <div class='col-xs-12 form-group card required'>
+                                            <label class='control-label'>Card Number</label>
+                                            <input autocomplete='off'  size='20' type='text' id="cardn"   name="cardnumber" ng-model="number" payments-validate="card" payments-format="card" payments-type-model="type" class="form-control" />
+                                          </div>
+                                      </div>
+                                      <div class='form-row'>
+                                          <div class='col-xs-6 form-group cvc required'>
+                                            <label class='control-label'>CVC</label>
+                                            <input autocomplete='off' class='form-control card-cvc' placeholder='ex. 311' size='4' type='text' id="cvc" ng-model="cvc" payments-validate="cvc" payments-format="cvc" payments-type-model="type">
+                                          </div>
+                                          <div class='col-xs-6 form-group expiration required'>
+                                            <label class='control-label'>Expiration</label>
+                                            <input class='form-control card-expiry-month' placeholder='MM/YYYY' size='2' type='text' id="exp" ng-model="expiry" payments-validate="expiry" payments-format="expiry" >
+                                          </div>
+                                        </div>   
+                                  </div>
+                                  <div class="col-md-6">
+                                   <div >
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Receiver Prefix</label>
+                                              <select class="form-control" ng-model="countrycode" data-ng-change="ConvertCurr()">
+                                                <option value="{{cur.phonecode}}" ng-repeat="cur in currencies">{{cur.country}} + ({{cur.phonecode}})</option>
+                                              </select>
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Receiver Number</label>
+                                              <input type="text" class="form-control"  placeholder="Phone Number" >
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">PhoneBook</label>
+                                              <select ng-options="size as size.name for size in sizes " ng-model="item" ng-change="update()"></select>{{item.code}} {{item.name}}
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Receiver Number</label>
+                                              <input type="text" class="form-control"  placeholder="Phone Number" disabled>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Amount to receive</label>
+                                              <input type="number" class="form-control"  placeholder="Amount" data-ng-model="amount" data-ng-change="forExConvert()">
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Recipient gets </label>
+                                              <input type="text" class="form-control"  data-ng-model="toValue" data-ng-change="forExConvert()"  disabled>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class='form-row'>
+                                          <div class='col-md-12 form-group'>
+                                            <button class='form-control btn btn-primary submit-button' type='submit'>Send »</button>
+                                          </div>
+                                      </div>
+                                      </div>
+                                  </div>
+                                </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                       <div ng-switch-when="m2b">
+                             <div class="panel panel-info" >
+                                <div class="panel-heading">
+                                  <h3 class="panel-title">Mobile to Bank</h3>                      
+                                </div>
+                                <div class="panel-body" ng-controller="transferMoneyController">
+                                  <div class="col-md-6">
+                                    <div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Prefix</label>
+                                              <select class="form-control" ng-model="countrycode" data-ng-change="forExConvert()">
+                                                <option value="{{cur.phonecode}}" ng-repeat="cur in currencies">{{cur.country}} + ({{cur.phonecode}})</option>
+                                              </select>
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Amount to receive</label>
+                                              <input type="number" class="form-control"  placeholder="Amount" data-ng-model="amount" data-ng-change="forExConvert()">
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Recipient gets </label>
+                                              <input type="text" class="form-control"  data-ng-model="toValue" data-ng-change="forExConvert()"  disabled>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class='form-row'>
+                                        <div class='col-xs-12 form-group required'>
+                                          <label class='control-label'>Receiver Bank Account Name</label>
+                                          <input class='form-control' size='4' type='text'>
+                                        </div>
+                                      </div>
+                                      <div class='form-row'>
+                                        <div class='col-xs-12 form-group card required'>
+                                          <label class='control-label'>Receiver Bank Account Number</label>
+                                          <input autocomplete='off' class='form-control card-number' size='20' type='text'>
+                                        </div>
+                                      </div>
+                                      <div class='form-row'>
+                                          <div class='col-md-12'>
+                                            <div class='form-control total btn btn-info'>
+                                              Total:
+                                              <span class='amount'>$300</span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      <div class='form-row'>
+                                        <div class='col-md-12 form-group'>
+                                          <button class='form-control btn btn-primary submit-button' type='submit'>Send »</button>
+                                        </div>
+                                      </div>
+                                  </div>
+                                </div>
+                              </div>
+                           </div>
+                           <div ng-switch-when="m2m">
+                             <div class="panel panel-info" >
+                                <div class="panel-heading">
+                                  <h3 class="panel-title">Mobile to Mobile</h3>                      
+                                </div>
+                                <div class="panel-body" ng-controller="transferMoneyController">
+                                  <div class="col-md-6">
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Receiver Prefix</label>
+                                              <select class="form-control" ng-options="cur.country + ' (+'+cur.phonecode +')' for cur in currencies track by cur.phonecode" ng-model="countrycode" data-ng-change="forExConvert()"></select>
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Receiver Number</label>
+                                              <input type="text" class="form-control"  placeholder="Phone Number" >
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">PhoneBook</label>
+                                              <select class="form-control" ng-model="phonebook"></select>
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Receiver Number</label>
+                                              <input type="text" class="form-control"  placeholder="Phone Number" disabled>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Amount to receive</label>
+                                              <input type="number" class="form-control"  placeholder="Amount" data-ng-model="amount" data-ng-change="forExConvert()">
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="form-group form-group-sm">
+                                              <label  class="control-label">Recipient gets </label>
+                                              <input type="text" class="form-control"  data-ng-model="toValue" data-ng-change="forExConvert()"  disabled>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class='form-row'>
+                                          <div class='col-md-12 form-group'>
+                                            <button class='form-control btn btn-primary submit-button' type='submit'>Send »</button>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    
+                                  </div>
+                                </div>
+                              </div>
+                           </div>
+                    </div>
+                                        
+                    </div>
+                    
+                    
                      <!-- Panel PhoneBook-->
                     <div class="panel panel-default" ng-show="PhoneBookForm" >
                       <div class="panel-heading">

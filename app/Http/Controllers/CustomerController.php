@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Customers;
 use Response;
+use Cartalyst\Sentinel\Native\Facades\Sentinel;
+use App\User;
+use Activation;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -48,7 +51,8 @@ class CustomerController extends Controller
             'first_name' => 'required',
             'last_name' => 'required',
             'sex' => 'required',
-            'phone' => 'required',
+            'prefix_code' =>'required',
+            'phonenumber' => 'required',
             'year' => 'required',
             'month' => 'required',
             'day' => 'required',
@@ -60,12 +64,13 @@ class CustomerController extends Controller
         if ($validator->fails()) {
             return response()->json(['error'=>$validator->errors()], 401);            
         }
+      $phone_complete  = $request->prefix_code.$request->phonenumber;
       $dob = $request->year.'-'.$request->month.'-'.$request->day;
       $input = [
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'sex' => $request->sex,
-            'phone' => $request->phone,
+            'phone' => $phone_complete ,
             'dob' => $dob,
             'nationality' => $request->nationality,
             'nid' => $request->nid,
@@ -73,7 +78,8 @@ class CustomerController extends Controller
         ];
         $customer = Customers::create($input);
 
-        return 'Customer Created'.'  '.$customer['email'];
+        return Response::json(['status' => 'true','userid'=>$userid]);
+        
     }
 
     /**
@@ -164,5 +170,19 @@ class CustomerController extends Controller
         $customer->delete();
 
         return 'Successfully deleted the customer!';
+    }
+
+    public function  isCustomer($id)
+    {
+        //
+        $customer = Customers::where('user_id', '=', $id)
+                            ->first();
+
+        if(!$customer){
+            return Response::json(['status' => false]); 
+        }
+        else{
+            return Response::json(['status' => true]); 
+        }
     }
 }
