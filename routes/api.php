@@ -29,6 +29,9 @@ Route::resource('tag', 'TagsController');
 Route::resource('blogpost', 'PostsController');
 Route::get('archievepost', 'PostsController@archieve');
 Route::resource('blogpostcomment', 'PostsCommentsController');
+Route::post('pay', 'PaymentController@paying');
+Route::post('paymobile', 'PaymentController@show');
+Route::post('testpay', 'PaymentController@test');
 
 
 

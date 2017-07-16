@@ -1,6 +1,6 @@
 'use strict';
 
-Stripe.setPublishableKey('pk_test_aj305u5jk2uN1hrDQWdH0eyl');
+Stripe.setPublishableKey('pk_test_aWyIUltAAS04f7KyYnp1PmG8');
 
 var app = angular.module('MoneyTransferApp', ['ngRoute',
                                               'ngAnimate',
@@ -206,18 +206,45 @@ app.run(["userService", function(userService) {
     });
 
     app.controller('transferMoneyController', function($scope, $http,API_URL,CurrencyService) {
-        
+
          $scope.onSubmit = function () {
             $scope.processing = true;
         };
 
         $scope.stripeCallback = function (code, result) {
             $scope.processing = false;
+            $scope.userinfo = angular.fromJson(sessionStorage.user);
             $scope.hideAlerts();
             if (result.error) {
                 $scope.stripeError = result.error.message;
             } else {
-                $scope.stripeToken = result.id;
+                var $payInfo = {
+                    'token' : result.id,
+                    'user_id' : $scope.userinfo.id,
+                    'user_email' : $scope.userinfo.email,
+                    'total':$scope.pay_amount,
+                    'countrycode':$scope.countrycode,
+                    'phonenumber':$scope.phonenumber
+                };
+                var url = API_URL + "pay";
+                $http({
+                    method: 'POST',
+                    url: url,
+                    data: $.param($payInfo),
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                }).then(function onSuccess(response) {
+                    if(response.status=="OK"){
+                        $scope.paid= true;
+                        $scope.stripeToken = response.data.message;
+                    }else{
+                        $scope.paid= false;
+                        $scope.stripeToken = response.data.message;
+                    }
+                }).catch(function onError(response) {
+                    console.log(response);
+                    alert('An error has occured. Please check the log for details');
+                });
+                
             }
         };
 
@@ -244,9 +271,8 @@ app.run(["userService", function(userService) {
         $scope.forExConvert = function() {
             angular.forEach($scope.rates, function(value, key) {
                     if(value.phonecode == $scope.countrycode){
-                        $scope.toValue = $scope.amount / value.exchange_rate;
-                        $scope.toValue = Math.round($scope.toValue);
-                        console.log($scope.toValue);
+                        $scope.pay_amount = $scope.amount / value.exchange_rate;
+                        $scope.pay_amount = Math.round($scope.pay_amount);
                     }   
                 });
         };

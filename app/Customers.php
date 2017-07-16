@@ -2,11 +2,14 @@
 
 namespace App;
 
+use Laravel\Cashier\Billable;
+use Laravel\Cashier\Contracts\Billable as BillableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Customers extends Model
 {
+    use Billable;
     use SoftDeletes;
 
     /**

@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
+use App\Customers;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -26,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        Customers::setStripeKey('sk_test_WeCDqhEXuKeafssw5IW2BEOR');
     }
 }
