@@ -27,10 +27,11 @@ Route::resource('country', 'CountriesController');
 Route::resource('category', 'CategoriesController');
 Route::resource('tag', 'TagsController');
 Route::resource('blogpost', 'PostsController');
+Route::resource('transaction', 'TransactionsController');
 Route::get('archievepost', 'PostsController@archieve');
 Route::resource('blogpostcomment', 'PostsCommentsController');
 Route::post('pay', 'PaymentController@paying');
-Route::post('paymobile', 'PaymentController@show');
+Route::post('paymobile', 'PaymentController@mobileTransfer');
 Route::post('testpay', 'PaymentController@test');
 
 

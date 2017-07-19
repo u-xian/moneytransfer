@@ -26,6 +26,18 @@ app.factory('CurrencyService', function($http) {
   };
 });
 
+app.factory('TransactionService', function($http) {
+  return {
+    getTransactions: function(url_api,userid) {
+      return $http.get(url_api + 'transaction/' + userid)
+      .then(function onSuccess(response) {
+             // Handle success
+             return  response.data;            
+            });  //1. this returns promise
+    }
+  };
+});
+
 
 
 app.factory('accountService', ['$timeout', '$http','$q', 'userService', '$window', function($timeout, $http, $q, userService, $window) {

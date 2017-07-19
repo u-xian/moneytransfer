@@ -3,16 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\ServicesRepo\PayMethodsRepository;
-
-use App\Customers;
+use App\ServicesRepo\Contracts\PayMethodsRepositoryInterface;
 
 class PaymentController extends Controller
 {
     //
     protected $pay;
 
-    public function __construct(PayMethodsRepository $pay)
+    public function __construct(PayMethodsRepositoryInterface $pay)
 	{
 	    $this->pay = $pay;
 	}
@@ -37,23 +35,21 @@ class PaymentController extends Controller
         return $result1;
     }
 
-    public function show(Request $request)
-	{
-		$msisdn  = $request['receiver_number'];
-        $amount  =$request['amount'];
+    public function mobileTransfer(Request $request){
+ 
+        $user_id  =$request['user_id'];
+        $total_price  =$request['total'] * 100;
+        $countrycode  =$request['countrycode'];
+        $phonenumber  =$request['phonenumber'];
+        $phone_complete = $countrycode.$phonenumber;
 
-		$result =  $this->pay->do_cashing($msisdn,$amount);
-		return $result['status'];
-	}
-
-	public function test(Request $request)
-	{
-		$sender_id  = $request['sender_id'];
-        $receiver_number  =$request['receiver_number'];
-        $amount  =$request['amount'];
-        
-        $result2 =  $this->pay->save_tnx($sender_id, $receiver_number, $amount, 1, "c2m");
-        
-		return $result2;
-	}
+        $result =  $this->pay->do_cashout($user_id,$total_price);
+        if($result['status']){
+        	$result1 =  $this->pay->do_cashin($phone_complete,$total_price);
+        	if($result1['status']){
+        		$result2 =  $this->pay->save_tnx($user_id, $phone_complete, $total_price, 1, "m2m");
+        	}
+        }
+        return $result1;
+    }
 }

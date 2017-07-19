@@ -96,8 +96,18 @@ app.run(["userService", function(userService) {
 
     });
 
-    app.controller('sendMOneyHomeController', function($scope, $http, $routeParams, API_URL,$window,CheckStatusService,CurrencyService) {
-        //Get the categories
+    app.controller('sendMOneyHomeController', function($scope, $http, $routeParams, API_URL,$window,CheckStatusService,CurrencyService,TransactionService) {
+
+        //Get the transactions 
+        $scope.userinfo = angular.fromJson(sessionStorage.user);
+
+       
+
+        TransactionService.getTransactions(API_URL,$scope.userinfo.id).then(function(d) { //2. so you can use .then()
+            $scope.transactions = d;
+        });
+
+
         $scope.TransactionsTable = false;
         $scope.CustomerForm = false;
         $scope.usable = false;
@@ -205,7 +215,7 @@ app.run(["userService", function(userService) {
 
     });
 
-    app.controller('transferMoneyController', function($scope, $http,API_URL,CurrencyService) {
+    app.controller('transferMoneyController', function($scope, $http,API_URL,CurrencyService,TransactionService) {
 
          $scope.onSubmit = function () {
             $scope.processing = true;
@@ -236,13 +246,16 @@ app.run(["userService", function(userService) {
                     if(response.status=="OK"){
                         $scope.paid= true;
                         $scope.stripeToken = response.data.message;
+                        TransactionService.getTransactions(API_URL,$scope.userinfo.id).then(function(d) { //2. so you can use .then()
+                            $scope.transactions = d;
+                        });
                     }else{
                         $scope.paid= false;
                         $scope.stripeToken = response.data.message;
                     }
                 }).catch(function onError(response) {
-                    console.log(response);
-                    alert('An error has occured. Please check the log for details');
+                    console.log(response.data);
+                    alert(response.data);
                 });
                 
             }
@@ -276,6 +289,32 @@ app.run(["userService", function(userService) {
                     }   
                 });
         };
+
+
+        $scope.saveTransfer = function() {
+            $scope.userinfo = angular.fromJson(sessionStorage.user);
+            var $payInfo = {
+                'user_id' : $scope.userinfo.id,
+                'total':$scope.pay_amount,
+                'countrycode':$scope.countrycode,
+                'phonenumber':$scope.phonenumber
+            };
+            var url = API_URL + "paymobile";
+            $http({
+                method: 'POST',
+                url: url,
+                data: $.param($payInfo),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(function onSuccess(response) {
+                $scope.processing = false;
+                $scope.stripeToken = response.data.message;
+                
+            }).catch(function onError(response) {
+                console.log(response);
+                alert('An error has occured. Please check the log for details');
+            });
+           
+        }
 
         
      

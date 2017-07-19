@@ -2,6 +2,8 @@
 
 namespace App\ServicesRepo;
 
+
+use App\ServicesRepo\Contracts\PayMethodsRepositoryInterface;
 use Illuminate\Container\Container as App;
 use App\Customers;
 use Carbon\Carbon;
@@ -9,7 +11,7 @@ use App\Transactions;
 use Response;
 
 
-class PayMethodsRepository
+class PayMethodsRepository implements PayMethodsRepositoryInterface
 {
 
 	protected $pay;
@@ -31,9 +33,11 @@ class PayMethodsRepository
 		 return  $mess;
 	}
 
-    public function do_cashout($msisdn, $amount)
+    public function do_cashout($user_id, $amount)
     {
-        if (!empty($msisdn) && !empty($amount)) {
+        $customer = Customers::where('user_id', '=', $user_id)->first();
+
+        if (($customer) && !empty($amount)) {
             $mess = ['status' => True,"message" =>"Cashout done successfully"];
         }
         else{

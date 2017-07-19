@@ -20,20 +20,21 @@
                       <thead>
                             <tr>
                                 <th class="hidden-xs">ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th><i class="fa fa-cog"></i></th>
+                                <th>Receiver Number</th>
+                                <th>Amount</th>
+                                <th>Transaction Status</th>
+                                <th>Transaction Type</th>
+                                <th>Transaction Date</th>
                             </tr> 
                           </thead>
                           <tbody>
-                            <tr>
+                            <tr ng-repeat="transaction in transactions">
                               <td class="hidden-xs">1</td>
-                              <td>John Doe</td>
-                              <td>johndoe@example.com</td>
-                              <td align="center">
-                                <a class="btn btn-default"><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;
-                                <a class="btn btn-default"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-                              </td>
+                              <td>{{transaction.receiver_number}}</td>
+                              <td>{{transaction.amount}}</td>
+                              <td>{{transaction.status}}</td>
+                              <td>{{transaction.transaction_type}}</td>
+                              <td>{{transaction.updated_at}}</td>
                             </tr>
                           </tbody>
                     </table>
@@ -242,6 +243,20 @@
                                   <h3 class="panel-title">Mobile to Mobile</h3>                      
                                 </div>
                                 <div class="panel-body" ng-controller="transferMoneyController">
+                                <form name="m2mForm"  ng-submit="onSubmit()">
+                                <div ng-if="processing" us-spinner></div>
+                                <alert ng-if="stripeError" class="alert-danger" type="'alert'" close="hideAlerts()">                           
+                                  <div class="alert alert-danger alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <strong>Error!</strong> Stripe returned an error: {{stripeError}}
+                                  </div>
+                                </alert>
+                                <alert ng-if="stripeToken" class="alert-success" close="hideAlerts()">
+                                  <div class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <strong>Success!</strong> Stripe successfully acquired! Token: {{stripeToken}}
+                                  </div>
+                                </alert>
                                   <div class="col-md-6">
                                         <div class="row">
                                           <div class="col-md-6">
@@ -255,21 +270,7 @@
                                           <div class="col-md-6">
                                             <div class="form-group form-group-sm">
                                               <label  class="control-label">Receiver Number</label>
-                                              <input type="text" class="form-control"  placeholder="Phone Number" >
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div class="row">
-                                          <div class="col-md-6">
-                                            <div class="form-group form-group-sm">
-                                              <label  class="control-label">PhoneBook</label>
-                                              <select class="form-control" ng-model="phonebook"></select>
-                                            </div>
-                                          </div>
-                                          <div class="col-md-6">
-                                            <div class="form-group form-group-sm">
-                                              <label  class="control-label">Receiver Number</label>
-                                              <input type="text" class="form-control"  placeholder="Phone Number" disabled>
+                                              <input type="text" class="form-control"  placeholder="Phone Number" ng-model="phonenumber">
                                             </div>
                                           </div>
                                         </div>
@@ -283,19 +284,20 @@
                                           <div class="col-md-6">
                                             <div class="form-group form-group-sm">
                                               <label  class="control-label">Recipient gets </label>
-                                              <input type="text" class="form-control"  data-ng-model="toValue" data-ng-change="forExConvert()"  disabled>
+                                              <input type="text" class="form-control total btn btn-info"  data-ng-model="pay_amount" data-ng-change="forExConvert()"  disabled>
                                             </div>
                                           </div>
                                         </div>
                                         <div class='form-row'>
                                           <div class='col-md-12 form-group'>
-                                            <button class='form-control btn btn-primary submit-button' type='submit'>Send »</button>
+                                            <button class='form-control btn btn-primary submit-button' type='submit' ng-click="saveTransfer()">Send »</button>
                                           </div>
                                       </div>
                                   </div>
                                   <div class="col-md-6">
                                     
                                   </div>
+                                  </form>
                                 </div>
                               </div>
                            </div>
