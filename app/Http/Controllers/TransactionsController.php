@@ -57,7 +57,7 @@ class TransactionsController extends Controller
         $transactions = Transactions::orderBy('id', 'DESC')
                                     ->where('sender_id', '=',$customer['id'])
                                     ->select('receiver_number', 'amount', 'status','transaction_type','updated_at')
-                                    ->get(); 
+                                    ->paginate(5);
         return $transactions;
     }
 

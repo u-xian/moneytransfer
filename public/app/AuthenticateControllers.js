@@ -17,15 +17,17 @@ app.controller('loginController', function($scope, $http,$location, API_URL,acco
                 if(data.status){
                     $('#myModal').modal('hide');
                     var id = data.id;
-                    $location.path('/sendmoney/'+id); 
+                    $scope.infouser = angular.fromJson(sessionStorage.user);
+                    $location.path('/sendmoney/'+id);
                     this.account=null;
                     $('#loginform').children('input').val('');                
                 }
                 else{
-                    alert(data.message);
+                    console.log(data);
                     $location.path('/'); 
                 }
             }, function(error) {
+                console.log(error);
                 $scope.message = error.error_description;
             })
         }

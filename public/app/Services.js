@@ -28,8 +28,8 @@ app.factory('CurrencyService', function($http) {
 
 app.factory('TransactionService', function($http) {
   return {
-    getTransactions: function(url_api,userid) {
-      return $http.get(url_api + 'transaction/' + userid)
+    getTransactions: function(url_api,userid,pageNumber) {
+      return $http.get(url_api + 'transaction/' + userid +'?page='+pageNumber)
       .then(function onSuccess(response) {
              // Handle success
              return  response.data;            

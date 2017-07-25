@@ -38,6 +38,14 @@ app.run(["userService", function(userService) {
                 templateUrl : 'views/partials/signup.html',
                 controller  : 'signupController'
             })
+        .when('/editprofile', {
+                templateUrl : 'views/partials/edit_profile.html',
+                controller  : 'editProfileController'
+            })
+        .when('/changepwd', {
+                templateUrl : 'views/partials/changepwd.html',
+                controller  : 'changepwdController'
+            })
         .when('/logout', {
                 templateUrl : 'views/partials/login.html',
                 controller  : 'logoutController'
@@ -96,16 +104,113 @@ app.run(["userService", function(userService) {
 
     });
 
-    app.controller('sendMOneyHomeController', function($scope, $http, $routeParams, API_URL,$window,CheckStatusService,CurrencyService,TransactionService) {
+    app.controller('editProfileController', function($scope, $http,API_URL) {
+        $scope.onSubmit = function () {
+            $scope.processing = true;
+        };
+
+        $scope.hideAlerts = function () {
+            $scope.stripeError = null;
+            $scope.stripeToken = null;
+        };
+
+        $scope.userinfo = angular.fromJson(sessionStorage.user);
+        $http.get(API_URL + 'customer/' + $scope.userinfo.id)
+            .then(function onSuccess(response) {
+                $scope.customerinfo = response.data;
+        });
+
+        $scope.save = function(id) {
+        var url = API_URL + 'customer/'+ id;
+        $http({
+            method: 'PUT',
+            url: url,
+            data: $.param($scope.customerinfo),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).then(function onSuccess(response) {
+            $scope.processing = false;
+            $scope.stripeToken = response.data.message;
+        }).catch(function onError(response) {
+            console.log(response);
+            alert('An error has occured. Please check the log for details');
+        });
+    }
+
+        
+
+    });
+
+    app.controller('changepwdController', function($scope, $http, API_URL) {
+        $scope.onSubmit = function () {
+            $scope.processing = true;
+        };
+
+        $scope.hideAlerts = function () {
+            $scope.stripeError = null;
+            $scope.stripeToken = null;
+        };
+        $scope.userinfo = angular.fromJson(sessionStorage.user);
+        $scope.save = function() {
+        var url = API_URL + 'resetpassword/'+ $scope.userinfo.id;
+        $http({
+            method: 'POST',
+            url: url,
+            data: $.param($scope.pwd),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).then(function onSuccess(response) {
+            $scope.processing = false;
+            $scope.stripeToken = response.data.message;
+        }).catch(function onError(response) {
+            console.log(response);
+            alert('An error has occured. Please check the log for details');
+        });
+    }
+        
+
+    });
+
+    
+
+    app.controller('sendMOneyHomeController', function($scope, $http, $routeParams, API_URL,$window,CheckStatusService,CurrencyService,TransactionService,userService) {
 
         //Get the transactions 
-        $scope.userinfo = angular.fromJson(sessionStorage.user);
+        $scope.getTnx = function(pageNumber){
+            if(pageNumber===undefined){
+                pageNumber = '1';
+            }
+            $scope.userinfo = angular.fromJson(sessionStorage.user);
+            TransactionService.getTransactions(API_URL,$scope.userinfo.id,pageNumber).then(function(d) { //2. so you can use .then()
+                $scope.transactions = d.data;
+                $scope.currentPage = d.current_page;
+                $scope.totalPages   = d.last_page;
+                // Pagination Range
+                    var pages = [];
 
+                    for(var i=1;i<=d.last_page;i++) {          
+                        pages.push(i);
+                    }
+                    $scope.range = pages; 
+            });
+
+
+        }
+
+        $scope.nextPage = function() {
+                if ($scope.currentPage < $scope.totalPages) {
+                    $scope.currentPage++;
+                    $scope.getTnx($scope.currentPage);
+                }
+            };
+        $scope.prevPage = function() {
+                if ($scope.currentPage > 1) {
+                    $scope.currentPage--;
+                    $scope.getTnx($scope.currentPage);
+                }
+            };
+        $scope.getTnx(1);
        
 
-        TransactionService.getTransactions(API_URL,$scope.userinfo.id).then(function(d) { //2. so you can use .then()
-            $scope.transactions = d;
-        });
+        
 
 
         $scope.TransactionsTable = false;
@@ -307,8 +412,7 @@ app.run(["userService", function(userService) {
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function onSuccess(response) {
                 $scope.processing = false;
-                $scope.stripeToken = response.data.message;
-                
+                $scope.stripeToken = response.data.message;           
             }).catch(function onError(response) {
                 console.log(response);
                 alert('An error has occured. Please check the log for details');

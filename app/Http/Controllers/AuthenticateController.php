@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\User;
 use Cartalyst\Sentinel\Native\Facades\Sentinel;
+use Reminder;
 use Cartalyst\Sentinel\Checkpoints\NotActivatedException;
 use Response;
 
@@ -20,7 +21,8 @@ class AuthenticateController extends Controller
 
     public function login(Request $request)
     {
-        try{
+        try
+        {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email',
                 'password' => 'required',
@@ -29,23 +31,31 @@ class AuthenticateController extends Controller
             if ($validator->fails()) {
                 return response()->json(['error'=>$validator->errors()], 401);            
             }
-
+            
             $credentials = [
-            'email' => $request->input('email'),
-            'password' => $request->input('password'),
+                'email' => $request->input('email'),
+                'password' => $request->input('password'),
             ];
 
-        //check login details
+            //check login details
             if($user = Sentinel::authenticate($credentials))
             {
+                $userdetails = Sentinel::findById($user['id']);
+                $login = Sentinel::login($userdetails);
                 $outputs = [
-                    'id'=> $user['id'],
-                    'email' => $user['email'],
+                    'id'=> $login['id'],
+                    'email' => $login['email'],
                     'status' => true,
                     'message'=>'Account activated.'
                 ];
-                return $outputs;
             }
+            
+
+            return Response::json($outputs); 
+
+            
+           
+           
         }     
         catch (NotActivatedException $e) {
             return Response::json(['status' => false,'message'=>'Account not activated.']); 
@@ -137,24 +147,37 @@ class AuthenticateController extends Controller
 
     public function resetPassword(Request $request, $id)
     {
-    	$hasher = Sentinel::getHasher();
+        $hasher = Sentinel::getHasher();
 
-        $oldPassword = $request->input('old_password');
+    	$oldPassword = $request->input('old_password');
         $password = $request->input('password');
         $passwordConf =  $request->input('password_confirmation');
 
         $user = Sentinel::findById($id);
 
         if (!$hasher->check($oldPassword, $user->password) || $password != $passwordConf) {
-            return 'Check input is correct.';
+            return Response::json([
+                'message' => 'Check input is correct.'
+            ]);
         }
         
-        $credentials = [
-            'password' => $password,
-        ];
+        $rem_create = Reminder::create($user);
 
-        Sentinel::update($user, $credentials);
+        $check_rem = Reminder::exists($user);
 
-        return 'Password reset successfuly';
+        if ($reminder = Reminder::complete($user, $rem_create['code'], $password))
+        {
+            // Reminder was successfull
+            return Response::json([
+                'message' => 'Password reset successfuly'
+                ]);
+        }
+        else
+        {
+            // Reminder not found or not completed.
+            return Response::json([
+                'message' => 'Password reset failed'
+                ]);
+        }    
     }
 }

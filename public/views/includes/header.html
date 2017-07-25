@@ -20,16 +20,16 @@
 								<li role="presentation"><a href="#!/howitworks">How it works</a></li>
 								<li role="presentation"><a href="#!/aboutus">About us</a></li>
 								<li role="presentation"><a href="#!/helpsupport">Help & Support</a></li>	
-								<li role="presentation"><a href="#!/blog">Blog</a></li>
+								<li role="presentation"  ng-if="$root.user"><a href="#!/sendmoney/{{user.id}}">Send Money</a></li>
 								<li role="presentation" ng-if="!$root.user"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal">Sign in | Sign Up</a></li>
                                 <li class="dropdown" ng-if="$root.user">
                                     <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">
-                                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                                        <i class="fa fa-user fa-fw"></i> {{user.email.split('@')[0]}} <i class="fa fa-caret-down"></i>
                                     </a>
                                     <ul class="dropdown-menu dropdown-user">
-                                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                                        <li><a href="#!/editprofile"><i class="fa fa-user fa-fw"></i> User Profile</a>
                                         </li>
-                                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                                        <li><a href="#!/changepwd"><i class="fa fa-gear fa-fw"></i> Change Password</a>
                                         </li>
                                         <li class="divider"></li>
                                         <li><a href="javascript:void(0)" data-ng-click="logout()"><i class="fa fa-sign-out fa-fw"></i> Logout</a>

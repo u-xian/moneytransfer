@@ -1,0 +1,49 @@
+<div class="container">
+    <h1>Change Password</h1>
+    <hr>
+  <div class="row">
+      <!-- edit form column -->
+      <div class="col-md-8 personal-info">
+        <h3>Personal info</h3>
+        <form class="form-horizontal" role="form" ng-controller="changepwdController" ng-submit="onSubmit()">
+          <div ng-if="processing" us-spinner></div>
+          <alert ng-if="stripeError" class="alert-danger" type="'alert'" close="hideAlerts()">                           
+          <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Error!</strong>: {{stripeError}}
+          </div>
+        </alert>
+        <alert ng-if="stripeToken" class="alert-success" close="hideAlerts()">
+          <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Success!</strong>: {{stripeToken}}
+          </div>
+        </alert>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Current Password:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="password"  ng-model="pwd.old_password">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">New Password:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="password"  ng-model="pwd.password">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Confirm Password:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="password"  ng-model="pwd.password_confirmation">
+            </div>
+          </div>       
+          <div class="form-group">
+            <label class="col-md-3 control-label"></label>
+            <div class="col-md-8">
+              <input type="submit" class="btn btn-primary" value="Save Changes" ng-click="save()">
+            </div>
+          </div>
+        </form>
+      </div>
+  </div>
+</div>

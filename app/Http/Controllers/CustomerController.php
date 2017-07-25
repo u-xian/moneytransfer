@@ -91,8 +91,8 @@ class CustomerController extends Controller
     public function show($id)
     {
         //
-        $customer = Customers::where('id', '=', $id)
-                         ->select('id','first_name','last_name','sex','phone','dob','nationality','status')
+        $customer = Customers::where('user_id', '=', $id)
+                         ->select('id','first_name','last_name','sex','phone','nid','dob','nationality','status')
                          ->first();
 
         if(!$customer){
