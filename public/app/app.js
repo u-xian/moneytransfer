@@ -75,7 +75,7 @@ app.run(["userService", function(userService) {
 			})
         .when('/sendmoney/:id', {
                 templateUrl : 'views/partials/home_sendmoney.html',
-                controller  : 'sendMOneyHomeController'
+                controller  : 'sendMoneyHomeController'
             })
         .when('/transfermoney', {
                 templateUrl : 'views/partials/transfermoney.html',
@@ -171,7 +171,50 @@ app.run(["userService", function(userService) {
 
     
 
-    app.controller('sendMOneyHomeController', function($scope, $http, $routeParams, API_URL,$window,CheckStatusService,CurrencyService,TransactionService,userService) {
+    app.controller('sendMoneyHomeController', function($scope,$http, $routeParams, API_URL,$window,CheckStatusService,CurrencyService,TransactionService,userService) {
+       
+       $scope.getTimezone = function(timestamp) {
+           var today = new Date(timestamp);
+           var offset = today.getTimezoneOffset(); 
+           var hours = Math.floor((Math.abs(offset)) / 60);
+           if(offset < 0 )
+            {
+                today.setHours(today.getHours() + hours );
+            }
+            else
+            {
+                today.setHours(today.getHours() - hours );
+            }
+        
+            return today;
+        }
+
+        
+
+
+        $scope.years =[];
+        $scope.months =[];
+        $scope.days =[];
+        
+        var year_current = new Date().getFullYear();             
+        for(var i=1900; i<=year_current; i++) {
+            $scope.years.push({
+                    yvrb: i
+                });
+        }
+
+        for(var i=1; i<=12; i++) {
+            $scope.months.push({
+                    mvrb: i
+                });
+        }
+
+        for(var i=1; i<=31; i++) {
+            $scope.days.push({
+                    dvrb: i
+                });
+        }
+
 
         //Get the transactions 
         $scope.getTnx = function(pageNumber){
@@ -210,9 +253,6 @@ app.run(["userService", function(userService) {
         $scope.getTnx(1);
        
 
-        
-
-
         $scope.TransactionsTable = false;
         $scope.CustomerForm = false;
         $scope.usable = false;
@@ -223,6 +263,7 @@ app.run(["userService", function(userService) {
                 $scope.CustomerForm = false;
                 $scope.TransferMoneyForm = false;
                 $scope.PhoneBookForm = false;
+                $scope.getTnx(1);
            }
            if (menuname === 2) {
                 $scope.TransactionsTable = false;
@@ -259,34 +300,6 @@ app.run(["userService", function(userService) {
             }
         });
 
-        
-
-        
-    });
-
-     app.controller('customerController', function($scope, $rootScope, $window, $http, API_URL,$location,CheckStatusService) {
-        $scope.years =[];
-        $scope.months =[];
-        $scope.days =[];
-                            
-        for(var i=1900; i<=2017; i++) {
-            $scope.years.push({
-                    yvrb: i
-                });
-        }
-
-        for(var i=1; i<=12; i++) {
-            $scope.months.push({
-                    mvrb: i
-                });
-        }
-
-        for(var i=1; i<=31; i++) {
-            $scope.days.push({
-                    dvrb: i
-                });
-        }
-
         $scope.saveCustomer = function() {
             var url = API_URL + "customer";
             $http({
@@ -318,6 +331,13 @@ app.run(["userService", function(userService) {
            
         }
 
+        
+
+        
+    });
+
+     app.controller('customerController', function($scope, $rootScope, $window, $http, API_URL,$location,CheckStatusService) {
+        
     });
 
     app.controller('transferMoneyController', function($scope, $http,API_URL,CurrencyService,TransactionService) {

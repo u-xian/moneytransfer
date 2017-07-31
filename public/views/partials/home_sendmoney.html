@@ -1,5 +1,5 @@
 <section id="blog" class="container">
-        <div class="blog" ng-controller="sendMOneyHomeController">
+        <div class="blog" ng-controller="sendMoneyHomeController">
             <div class="row">
                 <div class="col-md-2">
                    <div class="blog-item">
@@ -31,7 +31,10 @@
                             <tr ng-repeat="transaction in transactions">
                               <td class="hidden-xs">{{$index + 1}}</td>
                               <td>{{transaction.receiver_number}}</td>
-                              <td>{{transaction.amount}}</td>
+                              <td>
+                                <div ng-if="transaction.transaction_type == 'c2m' ">{{transaction.amount/100}}</div>
+                                <div ng-if="transaction.transaction_type == 'm2m' ">{{transaction.amount}}</div>
+                              </td>
                               <td>
                                 <div ng-if="transaction.status == 1 ">Successful</div>
                                 <div ng-if="transaction.status == 0 ">Failed</div>
@@ -40,7 +43,7 @@
                                 <div ng-if="transaction.transaction_type == 'c2m' ">Card to Mobile</div>
                                 <div ng-if="transaction.transaction_type == 'm2m' ">Mobile to Mobile</div>
                               </td>
-                              <td>{{transaction.updated_at}}</td>
+                              <td>{{getTimezone(transaction.updated_at) | date:'yyyy-MM-dd HH:mm:ss'}}</td>
                             </tr>
                           </tbody>
                     </table>
@@ -70,7 +73,7 @@
                       <div class="panel-heading">
                         <h3 class="panel-title">Customer Information</h3>
                       </div>
-                      <div class="panel-body" ng-controller="customerController">
+                      <div class="panel-body">
                         <form  class="form-horizontal" method="post" >
                         <div id="div_id_name" class="form-group required"> 
                             <label for="id_name" class="control-label col-md-4  requiredField">First name<span class="asteriskField">*</span> </label> 
@@ -176,13 +179,13 @@
                                 <alert ng-if="stripeError" class="alert-danger" type="'alert'" close="hideAlerts()">                           
                                   <div class="alert alert-danger alert-dismissible" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <strong>Error!</strong> Stripe returned an error: {{stripeError}}
+                                    <strong>Error!</strong> {{stripeError}}
                                   </div>
                                 </alert>
                                 <alert ng-if="stripeToken" class="alert-success" close="hideAlerts()">
                                   <div class="alert alert-success alert-dismissible" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <strong>Success!</strong> Stripe successfully acquired! Token: {{stripeToken}}
+                                    <strong>Success!</strong> {{stripeToken}}
                                   </div>
                                 </alert>
                                 <div class="row">
@@ -255,13 +258,13 @@
                                 <alert ng-if="stripeError" class="alert-danger" type="'alert'" close="hideAlerts()">                           
                                   <div class="alert alert-danger alert-dismissible" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <strong>Error!</strong> Stripe returned an error: {{stripeError}}
+                                    <strong>Error!</strong> {{stripeError}}
                                   </div>
                                 </alert>
                                 <alert ng-if="stripeToken" class="alert-success" close="hideAlerts()">
                                   <div class="alert alert-success alert-dismissible" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <strong>Success!</strong> Stripe successfully acquired! Token: {{stripeToken}}
+                                    <strong>Success!</strong> {{stripeToken}}
                                   </div>
                                 </alert>
                                   <div class="col-md-6">
