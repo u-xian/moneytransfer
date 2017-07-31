@@ -76,9 +76,10 @@ class CustomerController extends Controller
             'nid' => $request->nid,
             'user_id' => $request->user_id,
         ];
+
         $customer = Customers::create($input);
 
-        return Response::json(['status' => 'true','userid'=>$userid]);
+        return Response::json(['status' => true,'userid'=>$customer['user_id']]);
         
     }
 
@@ -177,6 +178,8 @@ class CustomerController extends Controller
         //
         $customer = Customers::where('user_id', '=', $id)
                             ->first();
+
+        //$customer = Customers::find($id);
 
         if(!$customer){
             return Response::json(['status' => false]); 
