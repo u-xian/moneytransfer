@@ -376,7 +376,7 @@ app.run(["userService", function(userService) {
                         });
                     }else{
                         $scope.paid= false;
-                        $scope.stripeToken = response.data.message;
+                        $scope.stripeError = response.data.message;
                     }
                 }).catch(function onError(response) {
                     console.log(response.data);

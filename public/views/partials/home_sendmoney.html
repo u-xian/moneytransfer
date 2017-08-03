@@ -11,7 +11,7 @@
                     </div>
                     </div>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-8">
                   <div class="panel panel-default" ng-show="TransactionsTable">
                     <!-- Default panel contents -->
                     <div class="panel-heading"><b>Transactions</b></div>
@@ -176,7 +176,7 @@
                           <div class="panel-body" ng-controller="transferMoneyController">
                             <form name="c2bForm" stripe-form="stripeCallback" ng-submit="onSubmit()" data-abide>
                               <div ng-if="processing" us-spinner></div>
-                                <alert ng-if="stripeError" class="alert-danger" type="'alert'" close="hideAlerts()">                           
+                                <alert ng-if="stripeError" class="alert-danger" type="'alert'" close="hideAlerts()">          
                                   <div class="alert alert-danger alert-dismissible" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     <strong>Error!</strong> {{stripeError}}
@@ -360,7 +360,14 @@
                   </div>
                   
 
-                  <aside class="col-md-4">
+                  <aside class="col-md-2">
+                    <div class="blog-item">
+                      <div class="entry-meta">
+                        <span id="publish_date"><i class="fa fa-user fa-fw"></i> <b>{{user.email.split('@')[0]}} | Settings</b></span>
+                        <span><a href="#!/editprofile"><i class="fa fa-user fa-fw"></i>User Profile</a></span>
+                        <span><a href="#!/changepwd"><i class="fa fa-gear fa-fw"></i>Change Password</a></span>
+                      </div>
+                    </div>
     			       </aside>  
             </div><!--/.row-->
 

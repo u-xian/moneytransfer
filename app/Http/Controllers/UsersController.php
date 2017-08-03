@@ -40,15 +40,33 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         //
-        $validator = Validator::make($request->all(), [
+        $input = $request->all();
+        $rules = [
             'tos'=> 'required',
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|min:6',
             'c_password' => 'required|same:password',
-        ]);
+        ];
 
+        $messages = [
+            'tos.required' => 'You have to agree Terms and conditions',
+            'email.required' => 'Please input your email address!',
+            'email.email' => 'Email  is not valid.',
+            'password.required' => 'Please input your password',
+            'password.min' => 'Password should be 6 characters',
+            'c_password.required' => 'Please input your password',
+            'c_password.min' => 'Password should be 6 characters',
+            'c_password.same' => 'Password and Re:password must match',
+        ];
+
+
+        $validator = Validator::make($input, $rules, $messages);
+
+        
         if ($validator->fails()) {
-            return response()->json(['error'=>$validator->errors()], 401);            
+            $messages = $validator->messages();
+            
+            return Response::json(['message' =>$messages],400);
         }
 
         $tos = json_decode($request->tos);
@@ -56,7 +74,7 @@ class UsersController extends Controller
              return "You have to agree Terms and conditions";   
         } 
        
-        $input = $request->all();
+        
         //$phone_complete  = $input['phone_prefix'].$input['phone'];
         //$input['phone'] = $phone_complete;
 
@@ -68,6 +86,7 @@ class UsersController extends Controller
                 'status' => $user['status'],
             ];
         return $outputs;
+        
     }
 
     /**

@@ -37,6 +37,7 @@ app.controller('loginController', function($scope, $http,$location, API_URL,acco
         }
 
         $scope.signup = function(usrs) {
+            $scope.processing = true;
             $scope.users = usrs;
             var url = API_URL + "user";
             $http({
@@ -45,11 +46,13 @@ app.controller('loginController', function($scope, $http,$location, API_URL,acco
                 data: $.param($scope.users),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function onSuccess(response) {
+                $scope.processing = false;
                 delete $scope.users.c_password;
                 $scope.login($scope.users);
             }).catch(function onError(response) {
-                console.log(response);
-                alert('An error has occured. Please check the log for details');
+                $scope.processing = false;
+                $scope.stripeError = response.data.message;
+                //alert('Please correct the following fields before continuing: ' + '<ul>'+response.data.message+'</ul>');
             });
     }
 });
