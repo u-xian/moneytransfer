@@ -1,6 +1,6 @@
 var app = angular.module('Blogcontrollers', [])
 
-app.controller('blogController', function($scope, $http, API_URL) {
+app.controller('blogController', function($scope, $http) {
         //Format Date 
         $scope.getDateFormat = function(timestamp) {
             return new Date(timestamp);
@@ -11,7 +11,7 @@ app.controller('blogController', function($scope, $http, API_URL) {
             if(pageNumber===undefined){
                 pageNumber = '1';
             }
-            $http.get(API_URL + "blogpost?page="+pageNumber)
+            $http.get("/api/blogpost?page="+pageNumber)
                 .then(function onSuccess(response) {
                     $scope.blogposts = response.data.data;
                     currentPage = response.current_page;
@@ -43,13 +43,13 @@ app.controller('blogController', function($scope, $http, API_URL) {
         $scope.getPosts(1);
        
        //Get the categories
-        $http.get(API_URL + 'category')
+        $http.get('/api/category')
             .then(function onSuccess(response) {
                 $scope.categories = response.data;
         });
 
        //Get the archieve 
-       $http.get(API_URL + 'archievepost')
+       $http.get('/api/archievepost')
             .then(function onSuccess(response) {
                 $scope.archieve  = response.data;
         });
@@ -59,7 +59,7 @@ app.controller('blogController', function($scope, $http, API_URL) {
 
     });
 
-    app.controller('getPostController', function($scope, $http, $routeParams,API_URL) {
+    app.controller('getPostController', function($scope, $http, $routeParams) {
         //Format Date 
         $scope.getDateFormat = function(timestamp) {
             return new Date(timestamp);
@@ -68,13 +68,13 @@ app.controller('blogController', function($scope, $http, API_URL) {
     	$scope.param = $routeParams.id;
     	var id = $scope.param;
 
-    	$http.get(API_URL + 'blogpost/' + id)
+    	$http.get('/api/blogpost/' + id)
             .then(function onSuccess(response) {
                 $scope.posts = response.data;
         });
         
         $scope.getComments = function(pid){
-            $http.get(API_URL + 'blogpostcomment/' + pid)
+            $http.get('/api/blogpostcomment/' + pid)
                 .then(function onSuccess(response) {
                     $scope.comments = response.data;
             });
@@ -83,7 +83,7 @@ app.controller('blogController', function($scope, $http, API_URL) {
 
         $scope.saveComment = function() {
             $scope.commentPost['on_post'] = id;
-            var url = API_URL + "blogpostcomment";
+            var url = '/api/blogpostcomment';
             $http({
                 method: 'POST',
                 url: url,

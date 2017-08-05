@@ -12,8 +12,6 @@ var app = angular.module('MoneyTransferApp', ['ngRoute',
                                               'Blogcontrollers',
                                               'services']);
 
-app.constant('API_URL', 'http://moneytransfer.dev:8082/api/');
-
 app.run(["userService", function(userService) {
   var user = userService.GetCurrentUser();
   if (user) {
@@ -88,7 +86,7 @@ app.run(["userService", function(userService) {
 	});
 
 
-	app.controller('mainController', function($scope, $http) {
+	app.controller('mainController', function($scope, $http,$location) {
        
     });
 
@@ -104,7 +102,7 @@ app.run(["userService", function(userService) {
 
     });
 
-    app.controller('editProfileController', function($scope, $http,API_URL) {
+    app.controller('editProfileController', function($scope, $http) {
         $scope.onSubmit = function () {
             $scope.processing = true;
         };
@@ -115,13 +113,13 @@ app.run(["userService", function(userService) {
         };
 
         $scope.userinfo = angular.fromJson(sessionStorage.user);
-        $http.get(API_URL + 'customer/' + $scope.userinfo.id)
+        $http.get('/api/customer/' + $scope.userinfo.id)
             .then(function onSuccess(response) {
                 $scope.customerinfo = response.data;
         });
 
         $scope.save = function(id) {
-        var url = API_URL + 'customer/'+ id;
+        var url = '/api/customer/'+ id;
         $http({
             method: 'PUT',
             url: url,
@@ -140,7 +138,7 @@ app.run(["userService", function(userService) {
 
     });
 
-    app.controller('changepwdController', function($scope, $http, API_URL) {
+    app.controller('changepwdController', function($scope, $http) {
         $scope.onSubmit = function () {
             $scope.processing = true;
         };
@@ -151,7 +149,7 @@ app.run(["userService", function(userService) {
         };
         $scope.userinfo = angular.fromJson(sessionStorage.user);
         $scope.save = function() {
-        var url = API_URL + 'resetpassword/'+ $scope.userinfo.id;
+        var url ='/api/resetpassword/'+ $scope.userinfo.id;
         $http({
             method: 'POST',
             url: url,
@@ -171,7 +169,7 @@ app.run(["userService", function(userService) {
 
     
 
-    app.controller('sendMoneyHomeController', function($scope,$http, $routeParams, API_URL,$window,CheckStatusService,CurrencyService,TransactionService,userService) {
+    app.controller('sendMoneyHomeController', function($scope,$http, $routeParams,$window,CheckStatusService,CurrencyService,TransactionService,userService) {
        
        $scope.getTimezone = function(timestamp) {
            var today = new Date(timestamp);
@@ -222,7 +220,7 @@ app.run(["userService", function(userService) {
                 pageNumber = '1';
             }
             $scope.userinfo = angular.fromJson(sessionStorage.user);
-            TransactionService.getTransactions(API_URL,$scope.userinfo.id,pageNumber).then(function(d) { //2. so you can use .then()
+            TransactionService.getTransactions($scope.userinfo.id,pageNumber).then(function(d) { //2. so you can use .then()
                 $scope.transactions = d.data;
                 $scope.currentPage = d.current_page;
                 $scope.totalPages   = d.last_page;
@@ -284,7 +282,7 @@ app.run(["userService", function(userService) {
         var id = $scope.param;
         $scope.userid = $scope.param;
 
-        CheckStatusService.getStatus(API_URL,id).then(function(d) { //2. so you can use .then()
+        CheckStatusService.getStatus(id).then(function(d) { //2. so you can use .then()
             $scope.data = d;
             if($scope.data)
             {
@@ -301,14 +299,14 @@ app.run(["userService", function(userService) {
         });
 
         $scope.saveCustomer = function() {
-            var url = API_URL + "customer";
+            var url = '/api/customer';
             $http({
                 method: 'POST',
                 url: url,
                 data: $.param($scope.record),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function onSuccess(response) {
-                CheckStatusService.getStatus(API_URL,response.data.userid).then(function(d) { //2. so you can use .then()
+                CheckStatusService.getStatus(response.data.userid).then(function(d) { //2. so you can use .then()
                     $scope.data = d;
                     if($scope.data)
                     {
@@ -336,11 +334,11 @@ app.run(["userService", function(userService) {
         
     });
 
-     app.controller('customerController', function($scope, $rootScope, $window, $http, API_URL,$location,CheckStatusService) {
+     app.controller('customerController', function($scope) {
         
     });
 
-    app.controller('transferMoneyController', function($scope, $http,API_URL,CurrencyService,TransactionService) {
+    app.controller('transferMoneyController', function($scope, $http,CurrencyService,TransactionService) {
 
          $scope.onSubmit = function () {
             $scope.processing = true;
@@ -361,26 +359,26 @@ app.run(["userService", function(userService) {
                     'countrycode':$scope.countrycode,
                     'phonenumber':$scope.phonenumber
                 };
-                var url = API_URL + "pay";
+                var url = '/api/pay';
                 $http({
                     method: 'POST',
                     url: url,
                     data: $.param($payInfo),
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).then(function onSuccess(response) {
-                    if(response.status=="OK"){
+                    if(response.data.status)
+                    {
                         $scope.paid= true;
-                        $scope.stripeToken = response.data.message;
-                        TransactionService.getTransactions(API_URL,$scope.userinfo.id).then(function(d) { //2. so you can use .then()
-                            $scope.transactions = d;
-                        });
-                    }else{
+                        $scope.stripeToken = response.data.message;                    
+                    }
+                    else
+                    {
                         $scope.paid= false;
                         $scope.stripeError = response.data.message;
                     }
-                }).catch(function onError(response) {
-                    console.log(response.data);
-                    alert(response.data);
+                }).catch(function onError(error){
+                    console.log(error);
+                    alert(error);
                 });
                 
             }
@@ -391,7 +389,7 @@ app.run(["userService", function(userService) {
             $scope.stripeToken = null;
         };
 
-        CurrencyService.getCurrency(API_URL).then(function(d) { //2. so you can use .then()
+        CurrencyService.getCurrency().then(function(d) { //2. so you can use .then()
             $scope.currencies = d;
         });
        
@@ -401,7 +399,7 @@ app.run(["userService", function(userService) {
             isFirstOpen2: true,
         };
         $scope.rates = {};
-        $http.get(API_URL+'currency')
+        $http.get('/api/currency')
             .then(function(res) {
                 $scope.rates = res.data;
                 $scope.forExConvert();
@@ -424,7 +422,7 @@ app.run(["userService", function(userService) {
                 'countrycode':$scope.countrycode,
                 'phonenumber':$scope.phonenumber
             };
-            var url = API_URL + "paymobile";
+            var url = '/api/paymobile';
             $http({
                 method: 'POST',
                 url: url,
@@ -433,36 +431,10 @@ app.run(["userService", function(userService) {
             }).then(function onSuccess(response) {
                 $scope.processing = false;
                 $scope.stripeToken = response.data.message;           
-            }).catch(function onError(response) {
-                console.log(response);
+            }).catch(function onError(error) {
+                console.log(error);
                 alert('An error has occured. Please check the log for details');
             });
            
         }
-
-        
-     
-    });
-
-    
-
-    app.controller('usersController', function($scope, $window, $http, API_URL,$location) {
-    	//save new record / update existing record
-    $scope.save = function() {
-        var url = API_URL + "user";
-        $http({
-            method: 'POST',
-            url: url,
-            data: $.param($scope.users),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).then(function onSuccess(response) {
-            //location.reload();
-            $('#myModal').modal('hide');
-            $location.path('/sendmoney');
-        }).catch(function onError(response) {
-            console.log(response);
-            alert('An error has occured. Please check the log for details');
-        });
-    }
-
     });

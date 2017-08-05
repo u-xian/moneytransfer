@@ -2,8 +2,8 @@ var app = angular.module('services', [])
 
 app.factory('CheckStatusService', function($http) {
   return {
-    getStatus: function(url_api,userid) {
-      return $http.get(url_api + 'isCustomer/' + userid)
+    getStatus: function(userid) {
+      return $http.get('/api/isCustomer/' + userid)
       .then(function onSuccess(response) {
              // Handle success
              var status = response.data.status;
@@ -16,8 +16,8 @@ app.factory('CheckStatusService', function($http) {
 
 app.factory('CurrencyService', function($http) {
   return {
-    getCurrency: function(url_api) {
-      return $http.get(url_api + 'currency')
+    getCurrency: function() {
+      return $http.get('/api/currency')
       .then(function onSuccess(response) {
              // Handle success
              return  response.data;            
@@ -28,8 +28,8 @@ app.factory('CurrencyService', function($http) {
 
 app.factory('TransactionService', function($http) {
   return {
-    getTransactions: function(url_api,userid,pageNumber) {
-      return $http.get(url_api + 'transaction/' + userid +'?page='+pageNumber)
+    getTransactions: function(userid,pageNumber) {
+      return $http.get('/api/transaction/' + userid +'?page='+pageNumber)
       .then(function onSuccess(response) {
              // Handle success
              return  response.data;            
@@ -42,12 +42,12 @@ app.factory('TransactionService', function($http) {
 
 app.factory('accountService', ['$timeout', '$http','$q', 'userService', '$window', function($timeout, $http, $q, userService, $window) {
   var fac = {};
-  fac.login = function(api_url,user) {
+  fac.login = function(user) {
 
     var defer = $q.defer();
     $timeout(function() {
       var mockUser = {};
-      var url = api_url + "login";
+      var url = "/api/login";
             $http({
                 method: 'POST',
                 url: url,

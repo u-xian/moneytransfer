@@ -1,6 +1,6 @@
 var app = angular.module('Authenticatecontrollers', [])
 
-app.controller('loginController', function($scope, $http,$location, API_URL,accountService) {
+app.controller('loginController', function($scope, $http,$location,accountService) {
         $scope.account = {
             email: '',
             password: ''
@@ -13,7 +13,7 @@ app.controller('loginController', function($scope, $http,$location, API_URL,acco
         $scope.login = function(acc) {
             $scope.account = acc;
 
-            accountService.login(API_URL,$scope.account).then(function(data) {
+            accountService.login($scope.account).then(function(data) {
                 if(data.status){
                     $('#myModal').modal('hide');
                     var id = data.id;
@@ -39,7 +39,7 @@ app.controller('loginController', function($scope, $http,$location, API_URL,acco
         $scope.signup = function(usrs) {
             $scope.processing = true;
             $scope.users = usrs;
-            var url = API_URL + "user";
+            var url = '/api/user';
             $http({
                 method: 'POST',
                 url: url,
@@ -57,7 +57,5 @@ app.controller('loginController', function($scope, $http,$location, API_URL,acco
     }
 });
     
-app.controller('signupController', function($scope, $rootScope, $window, $http, API_URL,$location) {
-        
-
+app.controller('signupController', function($scope) {
 });
