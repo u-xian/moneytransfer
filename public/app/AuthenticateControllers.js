@@ -12,18 +12,20 @@ app.controller('loginController', function($scope, $http,$location,accountServic
         }
         $scope.login = function(acc) {
             $scope.account = acc;
+            $scope.processing = true;
 
-            accountService.login($scope.account).then(function(data) {
-                if(data.status){
+            accountService.login($scope.account).then(function(response) {
+                $scope.processing = false;
+                if(response.status){
                     $('#myModal').modal('hide');
-                    var id = data.id;
+                    var id = response.id;
                     $scope.infouser = angular.fromJson(sessionStorage.user);
                     $location.path('/sendmoney/'+id);
                     this.account=null;
                     $('#loginform').children('input').val('');                
                 }
                 else{
-                    console.log(data);
+                    $scope.loginError = response.message;
                     $location.path('/'); 
                 }
             }, function(error) {

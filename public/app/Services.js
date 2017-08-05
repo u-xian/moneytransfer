@@ -56,8 +56,11 @@ app.factory('accountService', ['$timeout', '$http','$q', 'userService', '$window
             })
             .then(function onSuccess(response) {
                mockUser = response.data;
-               userService.SetCurrentUser(mockUser);
-               defer.resolve(mockUser);
+               console.log(mockUser);
+               if(mockUser.status){
+                  userService.SetCurrentUser(mockUser);          
+               } 
+               defer.resolve(mockUser);             
             })
             .catch(function onError(response) {
                 // Handle error

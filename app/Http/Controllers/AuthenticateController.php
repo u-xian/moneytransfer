@@ -36,7 +36,8 @@ class AuthenticateController extends Controller
                 'email' => $request->input('email'),
                 'password' => $request->input('password'),
             ];
-
+            
+            $outputs = [];
             //check login details
             if($user = Sentinel::authenticate($credentials))
             {
@@ -48,6 +49,13 @@ class AuthenticateController extends Controller
                     'status' => true,
                     'message'=>'Account activated.'
                 ];
+            }
+            else
+            {
+               $outputs = [
+                    'status' => false,
+                    'message'=>'Invalid email or password. Please try again'
+                ];  
             }
             
 

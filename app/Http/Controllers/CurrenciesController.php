@@ -18,7 +18,7 @@ class CurrenciesController extends Controller
     public function index()
     {
         //
-        $currencies = DB::table('Currencies')
+        $currencies = DB::table('currencies')
                     ->select('id','country','symbol','exchange_rate','phonecode')
                     ->get();
         return $currencies;
