@@ -80,12 +80,13 @@ class UsersController extends Controller
 
         //$user = Sentinel::registerAndActivate($input);
         $user = Sentinel::registerAndActivate($input);
+        $userinfo = $this->show($user['id']);
         $outputs = [
                 'id' => $user['id'],
                 'email' => $user['email'],
                 'status' => $user['status'],
             ];
-        return $outputs;
+        return $userinfo;
         
     }
 
@@ -100,7 +101,7 @@ class UsersController extends Controller
         //
         // get the user
         $user = User::where('id', '=', $id)
-                         ->select('id','first_name', 'last_name','phone','email')->first();
+                         ->select('id','email','is_admin','status','created_at','updated_at')->first();
 
         // show the edit form and pass the nerd
         return $user;

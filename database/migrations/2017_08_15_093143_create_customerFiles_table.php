@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableBlogPostTags extends Migration
+class CreateCustomerFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateTableBlogPostTags extends Migration
      */
     public function up()
     {
-        Schema::create('blog_post_tags', function (Blueprint $table) {
+        Schema::create('customerFiles', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('post_id');
-            $table->unsignedInteger('tag_id');
+            $table->string('name');
+            $table->integer('size');
+            $table->string('type');
+            $table->integer('customer_id');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ class CreateTableBlogPostTags extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('blog_post_tags');
+        Schema::dropIfExists('customerFiles');
     }
 }

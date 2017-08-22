@@ -17,13 +17,13 @@ class CreateCustomersTable extends Migration
             $table->increments('id');
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('email');
             $table->string('phone');
-            $table->string('password');
+            $table->string('nid');
             $table->char('sex',1);
             $table->date('dob');
             $table->string('nationality');
-            $table->smallInteger('status')->default(1);    
+            $table->integer('user_id');
+            $table->smallInteger('customer_status')->default(0);        
             $table->timestamps();
             $table->softDeletes(); 
         });

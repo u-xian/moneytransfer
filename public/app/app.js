@@ -10,13 +10,32 @@ var app = angular.module('MoneyTransferApp', ['ngRoute',
                                               'ui.bootstrap',
                                               'Authenticatecontrollers',
                                               'Blogcontrollers',
-                                              'services']);
+                                              'services'], 
+                                              ['$httpProvider', function ($httpProvider) {
+    $httpProvider.defaults.headers.post['X-CSRF-TOKEN'] = $('meta[name=csrf-token]').attr('content');
+}]);
 
 app.run(["userService", function(userService) {
   var user = userService.GetCurrentUser();
   if (user) {
     userService.SetCurrentUser(user);
   }
+}]);
+
+app.directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+            
+            element.bind('change', function(){
+                scope.$apply(function(){
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
 }]);
 
 
@@ -75,6 +94,10 @@ app.run(["userService", function(userService) {
                 templateUrl : 'views/partials/home_sendmoney.html',
                 controller  : 'sendMoneyHomeController'
             })
+        .when('/adminhome/:id', {
+                templateUrl : 'views/partials/home_admin.html',
+                controller  : 'adminHomeController'
+            })
         .when('/transfermoney', {
                 templateUrl : 'views/partials/transfermoney.html',
                 controller  : 'transferMoneyController'
@@ -85,8 +108,102 @@ app.run(["userService", function(userService) {
             });
 	});
 
-
+    
 	app.controller('mainController', function($scope, $http,$location) {
+       
+    });
+
+    app.controller('adminHomeController', function($scope, $http,$location,CustomerInfo) {
+        $scope.getTimezone = function(timestamp) {
+           var today = new Date(timestamp);
+           var offset = today.getTimezoneOffset(); 
+           var hours = Math.floor((Math.abs(offset)) / 60);
+           if(offset < 0 )
+            {
+                today.setHours(today.getHours() + hours );
+            }
+            else
+            {
+                today.setHours(today.getHours() - hours );
+            }
+        
+            return today;
+        }
+
+        $scope.showMenu = function(menuname) {
+           if (menuname === 1) {
+                $scope.TransactionsTable = true;
+                $scope.CustomerForm = false;
+                $scope.TransferMoneyForm = false;
+                $scope.PhoneBookForm = false;
+                $scope.getPendingCustomers(1);
+           }
+           if (menuname === 2) {$scope.getTimezone = function(timestamp) {
+           var today = new Date(timestamp);
+           var offset = today.getTimezoneOffset(); 
+           var hours = Math.floor((Math.abs(offset)) / 60);
+           if(offset < 0 )
+            {
+                today.setHours(today.getHours() + hours );
+            }
+            else
+            {
+                today.setHours(today.getHours() - hours );
+            }
+        
+            return today;
+        }
+
+                $scope.TransactionsTable = false;
+                $scope.CustomerForm = false;
+                $scope.TransferMoneyForm = true;
+                $scope.PhoneBookForm = false;
+           }
+           if (menuname === 3) {
+                $scope.TransactionsTable = false;
+                $scope.CustomerForm = false;
+                $scope.TransferMoneyForm = false;
+                $scope.PhoneBookForm = true;
+           }
+        }
+
+        //Get the transactions 
+        $scope.getPendingCustomers = function(pageNumber){
+            if(pageNumber===undefined){
+                pageNumber = '1';
+            }
+            $scope.userinfo = angular.fromJson(sessionStorage.user);
+            CustomerInfo.getPendingCust(pageNumber).then(function(d) { //2. so you can use .then()
+                $scope.pendingcustomers = d.data;
+                $scope.currentPage = d.current_page;
+                $scope.totalPages   = d.last_page;
+                // Pagination Range
+                    var pages = [];
+
+                    for(var i=1;i<=d.last_page;i++) {          
+                        pages.push(i);
+                    }
+                    $scope.range = pages; 
+            });
+
+
+        }
+
+        $scope.nextPage = function() {
+                if ($scope.currentPage < $scope.totalPages) {
+                    $scope.currentPage++;
+                    $scope.getTnx($scope.currentPage);
+                }
+            };
+        $scope.prevPage = function() {
+                if ($scope.currentPage > 1) {
+                    $scope.currentPage--;
+                    $scope.getTnx($scope.currentPage);
+                }
+            };
+        $scope.getPendingCustomers(1);
+
+
        
     });
 
@@ -167,28 +284,35 @@ app.run(["userService", function(userService) {
 
     });
 
-    
-
-    app.controller('sendMoneyHomeController', function($scope,$http, $routeParams,$window,CheckStatusService,CurrencyService,TransactionService,userService) {
-       
-       $scope.getTimezone = function(timestamp) {
-           var today = new Date(timestamp);
-           var offset = today.getTimezoneOffset(); 
-           var hours = Math.floor((Math.abs(offset)) / 60);
-           if(offset < 0 )
-            {
-                today.setHours(today.getHours() + hours );
-            }
-            else
-            {
-                today.setHours(today.getHours() - hours );
-            }
-        
-            return today;
-        }
-
-        
-
+    app.controller('sendMoneyHomeController', function($scope, $routeParams,CustomerInfo,CheckStatusService,TransactionService){
+        $scope.param = $routeParams.id;
+        var id = $scope.param;
+        $scope.userid = $scope.param;
+        CheckStatusService.getStatus(id).then(function(d) { //2. so you can use .then()
+            console.log(d);
+            if(d.custo_status == 0)
+                {
+                    $scope.TransactionsTable = false;
+                    $scope.CustomerForm = false;
+                    $scope.usable = false;
+                    $scope.PendingCustomer = true;
+                }
+                else if (d.custo_status == 1)
+                {
+                    $scope.TransactionsTable = true;
+                    $scope.CustomerForm = false;
+                    $scope.usable = true;
+                    $scope.PendingCustomer = false;
+                }
+                else
+                {
+                    $scope.TransactionsTable = false;
+                    $scope.CustomerForm = true;
+                    $scope.usable = false;
+                    $scope.PendingCustomer = false;
+                }
+            
+        });
 
         $scope.years =[];
         $scope.months =[];
@@ -213,6 +337,21 @@ app.run(["userService", function(userService) {
                 });
         }
 
+        $scope.getTimezone = function(timestamp) {
+           var today = new Date(timestamp);
+           var offset = today.getTimezoneOffset(); 
+           var hours = Math.floor((Math.abs(offset)) / 60);
+           if(offset < 0 )
+            {
+                today.setHours(today.getHours() + hours );
+            }
+            else
+            {
+                today.setHours(today.getHours() - hours );
+            }
+        
+            return today;
+        }
 
         //Get the transactions 
         $scope.getTnx = function(pageNumber){
@@ -249,12 +388,7 @@ app.run(["userService", function(userService) {
                 }
             };
         $scope.getTnx(1);
-       
 
-        $scope.TransactionsTable = false;
-        $scope.CustomerForm = false;
-        $scope.usable = false;
-        
         $scope.showMenu = function(menuname) {
            if (menuname === 1) {
                 $scope.TransactionsTable = true;
@@ -277,61 +411,36 @@ app.run(["userService", function(userService) {
            }
         }
 
-
-        $scope.param = $routeParams.id;
-        var id = $scope.param;
-        $scope.userid = $scope.param;
-
-        CheckStatusService.getStatus(id).then(function(d) { //2. so you can use .then()
-            $scope.data = d;
-            if($scope.data)
-            {
-                $scope.TransactionsTable = true;
-                $scope.CustomerForm = false;
-                $scope.usable = true;
-            }
-            else
-            {
-                $scope.TransactionsTable = false;
-                $scope.CustomerForm = true;
-                $scope.usable = false;
-            }
-        });
-
-        $scope.saveCustomer = function() {
-            var url = '/api/customer';
-            $http({
-                method: 'POST',
-                url: url,
-                data: $.param($scope.record),
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).then(function onSuccess(response) {
-                CheckStatusService.getStatus(response.data.userid).then(function(d) { //2. so you can use .then()
-                    $scope.data = d;
-                    if($scope.data)
-                    {
-                        $scope.TransactionsTable = true;
-                        $scope.CustomerForm = false;
-                        $scope.usable = true;
-                    }
-                    else
-                    {
-                        $scope.TransactionsTable = false;
-                        $scope.CustomerForm = true;
-                        $scope.usable = false;
-                    }
-               });
-
-            }).catch(function onError(response) {
-                console.log(response);
-                alert('An error has occured. Please check the log for details');
+        $scope.saveCustomer = function(){
+            var file = $scope.record.image_file;
+            CustomerInfo.save($scope.record,file).then(function(d) { //2. so you can use .then()
+                console.log(d);
+                if(d.custo_status == 0)
+                {
+                    $scope.TransactionsTable = false;
+                    $scope.CustomerForm = false;
+                    $scope.usable = false;
+                    $scope.PendingCustomer = true;
+                }
+                else if (d.custo_status == 1)
+                {
+                    $scope.TransactionsTable = true;
+                    $scope.CustomerForm = false;
+                    $scope.usable = true;
+                    $scope.PendingCustomer = false;
+                }
+                else
+                {
+                    $scope.TransactionsTable = false;
+                    $scope.CustomerForm = true;
+                    $scope.usable = false;
+                    $scope.PendingCustomer = false;
+                }
             });
-           
-        }
 
-        
-
-        
+            //CustomerInfo.save($scope.record,file);
+        };
+    
     });
 
      app.controller('customerController', function($scope) {

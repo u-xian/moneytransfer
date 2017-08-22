@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ServicesRepo\Contracts\UploadFileRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Customers;
@@ -14,6 +15,14 @@ use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
+    //
+    protected $upfile;
+
+    public function __construct(UploadFileRepositoryInterface $upfile)
+    {
+        $this->upfile = $upfile;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -23,7 +32,7 @@ class CustomerController extends Controller
     {
         //
         $customers = DB::table('Customers')
-                    ->select('id','first_name','last_name','sex', 'nid','phone','dob','nationality','status','user_id')
+                    ->select('id','first_name','last_name','sex', 'nid','phone','dob','nationality','customer_status','user_id')
                     ->get();
         return $customers;
     }
@@ -56,14 +65,20 @@ class CustomerController extends Controller
             'year' => 'required',
             'month' => 'required',
             'day' => 'required',
+            'image_file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'nationality' => 'required',
             'nid' => 'required',
             'user_id' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error'=>$validator->errors()], 401);            
+            $errors = [];
+            foreach ($validator->messages()->all() as $error) {
+                array_push($errors, $error);
+            }
+            return response()->json(['errors' => $errors, 'status' => 400], 400);            
         }
+        
       $phone_complete  = $request->prefix_code.$request->phonenumber;
       $dob = $request->year.'-'.$request->month.'-'.$request->day;
       $input = [
@@ -77,10 +92,30 @@ class CustomerController extends Controller
             'user_id' => $request->user_id,
         ];
 
+        $fname = $request->file('image_file');
+        
         $customer = Customers::create($input);
 
-        return Response::json(['status' => true,'userid'=>$customer['user_id']]);
+        $result = $this->upfile->upload($fname,$customer['id']);
         
+        $resp = [];
+        if ($result['status']){
+            $custinfo = $this->show($customer['id']);
+            $resp = [
+                'status' => true,
+                'userid'=>$customer['user_id'],
+                'custo_status' =>$custinfo['customer_status'], 
+                'message'=>'Customer information received'
+            ];
+        }else{
+            $resp = [
+                'status' => False,
+                'userid'=>$customer['user_id'],
+                'message'=>$result['message']
+            ];
+        }
+        
+        return Response::json($resp);
     }
 
     /**
@@ -92,9 +127,7 @@ class CustomerController extends Controller
     public function show($id)
     {
         //
-        $customer = Customers::where('user_id', '=', $id)
-                         ->select('id','first_name','last_name','sex','phone','nid','dob','nationality','status')
-                         ->first();
+         $customer = Customers::find($id);
 
         if(!$customer){
             return Response::json([
@@ -180,12 +213,65 @@ class CustomerController extends Controller
                             ->first();
 
         //$customer = Customers::find($id);
-
+                            
         if(!$customer){
-            return Response::json(['status' => false]); 
+            return Response::json(['status' => false,'custo_status' =>'undefined']); 
         }
         else{
-            return Response::json(['status' => true]); 
+            return Response::json(['status' => true,'custo_status' =>$customer['customer_status']]); 
         }
     }
+
+    public function  pending_Customers()
+    {
+        //
+        //$customer = Customers::where('customer_status', '=', 0)->get();
+        $course= Customers::with('photos')
+                            ->where('customer_status', '=', 0)
+                            ->orderBy('updated_at', 'DESC')
+                            ->paginate(5);
+      
+
+        
+            return Response::json($course); 
+    
+        
+    }
+
+    /**
+     * Upload new File
+     *
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function upload(Request $request)
+    {
+
+        /*$phone_complete  = $request->prefix_code.$request->phonenumber;
+        $dob = $request->year.'-'.$request->month.'-'.$request->day;
+        $input = [
+        'first_name' => $request->first_name,
+        'last_name' => $request->last_name,
+        'sex' => $request->sex,
+        'phone' => $phone_complete ,
+        'dob' => $dob,
+        'nationality' => $request->nationality,
+        'nid' => $request->nid,
+        'user_id' => $request->user_id,
+        ];*/
+
+        $fname = $request->file('image_file');
+        $result = $this->upfile->upload($fname,'4');
+
+        //$customer = Customers::create($input);
+        
+        
+
+        return Response::json($result);
+        
+
+        
+    }
+
 }

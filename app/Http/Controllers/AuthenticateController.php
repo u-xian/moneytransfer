@@ -45,7 +45,8 @@ class AuthenticateController extends Controller
                 $login = Sentinel::login($userdetails);
                 $outputs = [
                     'id'=> $login['id'],
-                    'email' => $login['email'],
+                    'email' => $login['email'], 
+                    'is_admin' => ($login['is_admin'] > 0 ? true : false),
                     'status' => true,
                     'message'=>'Account activated.'
                 ];

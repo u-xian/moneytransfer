@@ -16,13 +16,21 @@ app.controller('loginController', function($scope, $http,$location,accountServic
 
             accountService.login($scope.account).then(function(response) {
                 $scope.processing = false;
+                $('#loginform').children('input').val('');
                 if(response.status){
                     $('#myModal').modal('hide');
                     var id = response.id;
                     $scope.infouser = angular.fromJson(sessionStorage.user);
-                    $location.path('/sendmoney/'+id);
-                    this.account=null;
-                    $('#loginform').children('input').val('');                
+                    if($scope.infouser.is_admin){
+                        this.account=null;
+                        $location.path('/adminhome/'+id);                       
+                    }
+                    else{
+                        this.account=null;
+                        $location.path('/sendmoney/'+id);
+                    }                   
+                    
+                                    
                 }
                 else{
                     $scope.loginError = response.message;

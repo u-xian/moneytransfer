@@ -30,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
         //
         Customers::setStripeKey('sk_test_WeCDqhEXuKeafssw5IW2BEOR');
         $this->app->bind('App\ServicesRepo\Contracts\PayMethodsRepositoryInterface', 'App\ServicesRepo\PayMethodsRepository');
+        $this->app->bind('App\ServicesRepo\Contracts\UploadFileRepositoryInterface', 'App\ServicesRepo\UploadFileRepository');
     }
 }

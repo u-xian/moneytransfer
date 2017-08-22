@@ -18,7 +18,7 @@ class Customers extends Model
      * @var array
      */
     protected $fillable = [
-        'first_name','last_name','sex', 'nid', 'password','phone','dob','nationality','status','user_id',
+        'first_name','last_name','sex', 'nid','phone','dob','nationality','user_id','customer_status',
     ];
 
     /**
@@ -26,6 +26,13 @@ class Customers extends Model
      *
      * @var array
      */
-    protected $hidden = ['password',];
     protected $dates = ['deleted_at'];
+
+    /**
+     * Get the photos for the customer.
+     */
+    public function photos()
+    {
+        return $this->hasOne('App\Customerfiles','customer_id','id');
+    }
 }

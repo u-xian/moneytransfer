@@ -18,6 +18,7 @@ class CreateCurrenciesTable extends Migration
             $table->string('country');
             $table->string('symbol');
             $table->double('exchange_rate',8,4);
+            $table->string('phonecode');
             $table->timestamps();
         });
     }

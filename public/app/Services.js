@@ -6,9 +6,9 @@ app.factory('CheckStatusService', function($http) {
       return $http.get('/api/isCustomer/' + userid)
       .then(function onSuccess(response) {
              // Handle success
-             var status = response.data.status;
-             return status;
-            
+             //var status = response.data.status;
+             //return status;     
+             return  response.data;       
             });  //1. this returns promise
     }
   };
@@ -56,7 +56,6 @@ app.factory('accountService', ['$timeout', '$http','$q', 'userService', '$window
             })
             .then(function onSuccess(response) {
                mockUser = response.data;
-               console.log(mockUser);
                if(mockUser.status){
                   userService.SetCurrentUser(mockUser);          
                } 
@@ -110,3 +109,51 @@ app.factory('currencyConverter', function() {
       return amount * usdToForeignRates[outCurr] * 1 / usdToForeignRates[inCurr];
     }
   });
+
+app.service('CustomerInfo', ['$http','$q', function ($http,$q) {
+
+    this.save = function(model,file){
+      //
+        var defer = $q.defer();
+        var mockUser = {};
+        var fd = new FormData();
+        fd.append('first_name',model.first_name );
+        fd.append('last_name',model.last_name );
+        fd.append('sex',model.sex );
+        fd.append('prefix_code',model.prefix_code );
+        fd.append('phonenumber',model.phonenumber );
+        fd.append('year',model.year );
+        fd.append('month' ,model.month);
+        fd.append('day',model.day );
+        fd.append('image_file', file);
+        fd.append('nationality',model.nationality );
+        fd.append('nid',model.nid );
+        fd.append('user_id',model.user_id);
+
+        $http.post('/api/customer', fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .then(function onSuccess(response) {
+            mockUser = response.data;
+            defer.resolve(mockUser);          
+        })
+        .catch(function onError(response) {
+          // Handle error
+          console.log(response);
+        });
+
+        return defer.promise;
+    };
+
+    this.getPendingCust = function(userid,pageNumber) {
+      return $http.get('/api/pendingcustomers/'+'?page='+pageNumber)
+      .then(function onSuccess(response) {
+             // Handle success
+             return  response.data;            
+            });  //1. this returns promise
+    }
+
+
+    
+}]);
