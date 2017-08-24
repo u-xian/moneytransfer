@@ -13,12 +13,9 @@
                 </div>
                 <div class="col-md-8">
                   <!-- Alert for pending customers-->
-                    <div class="alert alert-warning alert-dismissible" role="alert" ng-show="PendingCustomer" >
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      <strong>Warning!</strong> 
-                      We have received your personal details and Identification Document. <br />
-                      Our agents are verifying the details you provided. <br />
-                      You will receive an email once this has been done. <br />
+                    <div class="{{alertclass}}" role="alert" ng-show="PendingCustomer" >
+                      <strong>Warning!</strong>                   
+                      <div ng-bind-html="message"></div>
                       <b> <a  href="#!/editprofile">You can also click here to update the details you provided</a> </b>
                     </div>
                     <!-- End Alert for pending customers--> 

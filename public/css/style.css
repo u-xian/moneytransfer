@@ -1097,7 +1097,22 @@ a.adisabled:active { text-decoration: none; }
         border-color: #f00 !important;
   }
 
-  
+  .modalImage .image-wrapper {
+   text-align: center;
+ }
+.modalImage .image-wrapper img {
+   max-width: 560px;
+   max-height: 560px;
+}
+.modalImage .image-description {
+  text-align: center;
+  margin-top: 10px;
+}
+.table-condensed{
+  font-size: 12px;
+}
+
+
 
   
 

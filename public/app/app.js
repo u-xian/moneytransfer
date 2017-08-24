@@ -4,6 +4,7 @@ Stripe.setPublishableKey('pk_test_aWyIUltAAS04f7KyYnp1PmG8');
 
 var app = angular.module('MoneyTransferApp', ['ngRoute',
                                               'ngAnimate',
+                                              'ngSanitize',
                                               'angularSpinner',
                                               'ngMessages',
                                               'angularPayments', 
@@ -37,6 +38,44 @@ app.directive('fileModel', ['$parse', function ($parse) {
         }
     };
 }]);
+
+app.directive('modaldraggable', function ($document) {
+  "use strict";
+  return function (scope, element) {
+    var startX = 0,
+      startY = 0,
+      x = 0,
+      y = 0;
+     element= angular.element(document.getElementsByClassName("modal-dialog"));
+    element.css({
+      position: 'fixed',
+      cursor: 'move'
+    });
+    
+    element.on('mousedown', function (event) {
+      // Prevent default dragging of selected content
+      event.preventDefault();
+      startX = event.screenX - x;
+      startY = event.screenY - y;
+      $document.on('mousemove', mousemove);
+      $document.on('mouseup', mouseup);
+    });
+
+    function mousemove(event) {
+      y = event.screenY - startY;
+      x = event.screenX - startX;
+      element.css({
+        top: y + 'px',
+        left: x + 'px'
+      });
+    }
+
+    function mouseup() {
+      $document.unbind('mousemove', mousemove);
+      $document.unbind('mouseup', mouseup);
+    }
+  };
+});
 
 
  
@@ -113,7 +152,7 @@ app.directive('fileModel', ['$parse', function ($parse) {
        
     });
 
-    app.controller('adminHomeController', function($scope, $http,$location,CustomerInfo) {
+    app.controller('adminHomeController', function($scope, $http,$location,CustomerInfo,$uibModal) {
         $scope.getTimezone = function(timestamp) {
            var today = new Date(timestamp);
            var offset = today.getTimezoneOffset(); 
@@ -203,8 +242,43 @@ app.directive('fileModel', ['$parse', function ($parse) {
             };
         $scope.getPendingCustomers(1);
 
+        $scope.openModalImage = function (imageSrc) {
+          $uibModal.open({
+            templateUrl : 'views/partials/modalImage.html',
+            resolve: {
+                imageSrcToUse: function () {
+                    return imageSrc;
+                }
+            },
+            controller: [
+            "$scope", "imageSrcToUse",
+            function ($scope, imageSrcToUse) {
+                $scope.ImageSrc = imageSrcToUse;
+            }
+            ]
+        });
+      };
+      $scope.activate_discard_customer = function (id,action_type) {
+        var activemsg ='Do you want to activate this customer ?';
+        var discardmsg ='Do you want to discard this customer ?';
+        if (action_type==1){
+           confirm(activemsg);
+        }
+        else if(action_type==0){
+           confirm(discardmsg);
+        }
+        else{
+           alert('Please check');
+        }
+        
+        $http.get('/api/activate_discard_customer/'+ id +'/'+ action_type)
+            .then(function onSuccess(response) {
+                if(response.data.status){
+                    $scope.getPendingCustomers(1);
+                }
+        });
+      };
 
-       
     });
 
     app.controller('howitworksController', function($scope, $http) {
@@ -289,13 +363,24 @@ app.directive('fileModel', ['$parse', function ($parse) {
         var id = $scope.param;
         $scope.userid = $scope.param;
         CheckStatusService.getStatus(id).then(function(d) { //2. so you can use .then()
-            console.log(d);
             if(d.custo_status == 0)
                 {
                     $scope.TransactionsTable = false;
                     $scope.CustomerForm = false;
                     $scope.usable = false;
                     $scope.PendingCustomer = true;
+                    $scope.alertclass = "alert alert-warning";
+                    $scope.message = "We have received your personal details and Identification Document.<br/> Our agents are verifying the details you provided. <br/> You will receive an email once this has been done. <br/>";
+                }
+                else if (d.custo_status == 2)
+                {
+                    $scope.TransactionsTable = false;
+                    $scope.CustomerForm = false;
+                    $scope.usable = false;
+                    $scope.PendingCustomer = true;
+                    $scope.alertclass = "alert alert-danger";
+                    $scope.message = "Your personal details and Identification Document you provided are not coherant. <br/>Please rectify them and re-submit <br/>";
+
                 }
                 else if (d.custo_status == 1)
                 {
@@ -414,13 +499,24 @@ app.directive('fileModel', ['$parse', function ($parse) {
         $scope.saveCustomer = function(){
             var file = $scope.record.image_file;
             CustomerInfo.save($scope.record,file).then(function(d) { //2. so you can use .then()
-                console.log(d);
                 if(d.custo_status == 0)
                 {
                     $scope.TransactionsTable = false;
                     $scope.CustomerForm = false;
                     $scope.usable = false;
                     $scope.PendingCustomer = true;
+                    $scope.alertclass = "alert alert-warning";
+                    $scope.message = "We have received your personal details and Identification Document.<br/> Our agents are verifying the details you provided. <br/> You will receive an email once this has been done. <br/>";
+                }
+                else if (d.custo_status == 2)
+                {
+                    $scope.TransactionsTable = false;
+                    $scope.CustomerForm = false;
+                    $scope.usable = false;
+                    $scope.PendingCustomer = true;
+                    $scope.alertclass = "alert alert-danger";
+                    $scope.message = "Your personal details and Identification Document you provided are not coherant. <br/>Please rectify them and re-submit <br/>";
+
                 }
                 else if (d.custo_status == 1)
                 {

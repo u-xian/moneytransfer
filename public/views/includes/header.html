@@ -19,9 +19,10 @@
 							<ul class="nav nav-tabs" role="tablist">
 								<li role="presentation"><a href="#!/howitworks">How it works</a></li>
 								<li role="presentation"><a href="#!/aboutus">About us</a></li>
-								<li role="presentation"><a href="#!/helpsupport">Help & Support</a></li>	
-								<li role="presentation"  ng-if="$root.user.status"><a href="#!/sendmoney/{{user.id}}">Send Money</a></li>
-								<li role="presentation" ng-if="!$root.user.status"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal">Sign in | Sign Up</a></li>
+								<li role="presentation"><a href="#!/helpsupport">Help & Support</a></li>
+                                <li role="presentation"  ng-if="$root.user.is_admin"><a href="#!/adminhome/{{user.id}}">Admin Home</a></li>	
+								<li role="presentation"  ng-if="$root.user.status && !$root.user.is_admin"><a href="#!/sendmoney/{{user.id}}">Send Money</a></li>
+								<li role="presentation"  ng-if="!$root.user.status"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal">Sign in | Sign Up</a></li>
                                 <li role="presentation"  ng-if="$root.user.status"><a href="javascript:void(0)" data-ng-click="logout()"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
 							</ul>
 						</div>

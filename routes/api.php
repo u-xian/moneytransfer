@@ -22,6 +22,7 @@ Route::get('checkuserstatus/{id}', 'UsersController@isActivated');
 Route::get('activate/{id}', 'UsersController@activate');
 Route::resource('customer', 'CustomerController');
 Route::post('upload', 'CustomerController@upload');
+Route::get('activate_discard_customer/{id}/{action_type}', 'CustomerController@activate_discard_customer');
 Route::get('pendingcustomers', 'CustomerController@pending_customers');
 Route::get('isCustomer/{id}', 'CustomerController@isCustomer');
 Route::resource('currency', 'CurrenciesController');

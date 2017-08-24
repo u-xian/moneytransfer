@@ -225,17 +225,36 @@ class CustomerController extends Controller
     public function  pending_Customers()
     {
         //
-        //$customer = Customers::where('customer_status', '=', 0)->get();
-        $course= Customers::with('photos')
+        $pending_customers= Customers::with('photos')
                             ->where('customer_status', '=', 0)
                             ->orderBy('updated_at', 'DESC')
-                            ->paginate(5);
-      
+                            ->paginate(5);   
+        return Response::json($pending_customers);     
+    }
 
-        
-            return Response::json($course); 
-    
-        
+    public function activate_discard_customer($id , $action_type)
+    {
+        $customer = Customers::find($id);
+
+        if($action_type == '1'){
+            $cost_status = 1;
+            $mess ='Customer activated Succesfully';
+        } 
+        elseif($action_type == '0'){
+            $cost_status = 2;
+            $mess ='Customer discarded Succesfully';
+        }
+        else{
+            $cost_status = 0;
+             $mess ='No change';
+        }  
+        $customer->customer_status  = $cost_status;
+        $customer->save(); 
+ 
+        return Response::json([
+                'status' => true,
+                'message' => $mess,
+        ]);
     }
 
     /**

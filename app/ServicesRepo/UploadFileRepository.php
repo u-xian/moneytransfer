@@ -40,7 +40,7 @@ class UploadFileRepository implements UploadFileRepositoryInterface
     {
         $path = $filename->store('public');
         $file = [
-            'name' => str_replace('public/', '', $path),
+            'name' => 'storage/'. str_replace('public/', '', $path),
             'type' => $filename->extension(),
             'size' => $filename->getClientSize(),
             'customer_id' => $customerid

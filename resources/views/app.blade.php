@@ -8,7 +8,7 @@
 
     <!-- Bootstrap -->
     <link href="{{ asset('/css/bootstrap.min.css') }}" rel="stylesheet">
-	<link rel="stylesheet" href="{{ asset('/css/font-awesome.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('/css/jquery.bxslider.css') }}">
 	<link rel="stylesheet" href="{{ asset('/css/isotope.css') }}" type="text/css" media="screen" />	
 	<link rel="stylesheet" href="{{ asset('/css/animate.css') }}">
@@ -54,8 +54,6 @@
     <script src=" {{ asset('/js/angular-payments.js') }}"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-spinner/0.5.1/angular-spinner.js"></script>
-
- 
     
     <script src="{{ asset('/js/ui-bootstrap-tpls-2.5.0.min.js') }} "></script>
     <script src="{{ asset('/app/Authenticatecontrollers.js') }}"></script>
