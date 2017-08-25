@@ -241,6 +241,30 @@ app.directive('modaldraggable', function ($document) {
             ]
         });
       };
+
+      $scope.openModalCurrency = function () {
+          $uibModal.open({
+            templateUrl : 'views/partials/modalCurrency.html',
+            controller: [
+            "$scope",
+            function ($scope) {
+            }
+            ]
+        });
+      };
+
+      $scope.openModalCountry = function () {
+          $uibModal.open({
+            templateUrl : 'views/partials/modalCountry.html',
+            controller: [
+            "$scope",
+            function ($scope) {
+            }
+            ]
+        });
+      };
+
+      //Function to active/deactivate customers
       $scope.activate_discard_customer = function (id,action_type) {
         var activemsg ='Do you want to activate this customer ?';
         var discardmsg ='Do you want to discard this customer ?';

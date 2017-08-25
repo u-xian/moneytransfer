@@ -82,7 +82,7 @@
             Page {{currentPage}} of {{totalPages}}
           </div>
           <div class="col col-xs-8">
-            <ul class="pagination pagination-lg">
+            <ul class="pagination pagination-lg pull-right">
               <li>
                 <a href="javascript:void(0)" ng-click="prevPage()">&lsaquo; Prev </a>
               </li> 
@@ -109,7 +109,7 @@
             <b>Countries</b>
           </div>
           <div class="col col-xs-6 text-right">
-            <button type="button" class="btn btn-sm btn-primary btn-create">Create New</button>
+            <button type="button" class="btn btn-sm btn-primary btn-create" ng-click="openModalCountry()">Create New</button>
           </div>
         </div>
         
@@ -156,7 +156,7 @@
             Page {{gtcurrentPage}} of {{gttotalPages}}
           </div>
           <div class="col col-xs-8">
-            <ul class="pagination pagination-lg">
+            <ul class="pagination pagination-lg pull-right">
               <li>
                 <a href="javascript:void(0)" ng-click="gtprevPage()">&lsaquo; Prev </a>
               </li>
@@ -180,7 +180,7 @@
             <b>Currencies</b>
           </div>
           <div class="col col-xs-6 text-right">
-            <button type="button" class="btn btn-sm btn-primary btn-create">Create New</button>
+            <button type="button" class="btn btn-sm btn-primary btn-create" ng-click="openModalCurrency()">Create New</button>
           </div>
         </div>
         
@@ -223,7 +223,7 @@
             Page {{gccurrentPage}} of {{gctotalPages}}
           </div>
           <div class="col col-xs-8">
-            <ul class="pagination pagination-lg">
+            <ul class="pagination pagination-lg pull-right">
               <li>
                 <a href="javascript:void(0)" ng-click="gcprevPage()">&lsaquo; Prev </a>
               </li>
