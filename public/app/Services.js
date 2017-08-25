@@ -38,6 +38,30 @@ app.factory('TransactionService', function($http) {
   };
 });
 
+app.factory('CountriesService', function($http) {
+  return {
+    getCountries: function(pageNumber) {
+      return $http.get('/api/country/'+'?page='+pageNumber)
+      .then(function onSuccess(response) {
+             // Handle success
+             return  response.data;            
+            });  //1. this returns promise
+    }
+  };
+});
+
+app.factory('CurrenciesService', function($http) {
+  return {
+    getCurrencies: function(pageNumber) {
+      return $http.get('/api/currency/'+'?page='+pageNumber)
+      .then(function onSuccess(response) {
+             // Handle success
+             return  response.data;            
+            });  //1. this returns promise
+    }
+  };
+});
+
 
 
 app.factory('accountService', ['$timeout', '$http','$q', 'userService', '$window', function($timeout, $http, $q, userService, $window) {

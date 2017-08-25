@@ -20,7 +20,7 @@ class CountriesController extends Controller
         //
         $countries = DB::table('Countries')
                     ->select('id','iso_abbr','name','nicename','iso_name','numcode','phonecode')
-                    ->get();
+                    ->paginate(5);
         return $countries;
     }
 

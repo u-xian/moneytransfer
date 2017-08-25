@@ -20,7 +20,7 @@ class CurrenciesController extends Controller
         //
         $currencies = DB::table('currencies')
                     ->select('id','country','symbol','exchange_rate','phonecode')
-                    ->get();
+                    ->paginate(5);
         return $currencies;
     }
 

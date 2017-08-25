@@ -152,7 +152,7 @@ app.directive('modaldraggable', function ($document) {
        
     });
 
-    app.controller('adminHomeController', function($scope, $http,$location,CustomerInfo,$uibModal) {
+    app.controller('adminHomeController', function($scope, $http,$location,CustomerInfo,$uibModal,CountriesService,CurrenciesService) {
         $scope.getTimezone = function(timestamp) {
            var today = new Date(timestamp);
            var offset = today.getTimezoneOffset(); 
@@ -171,38 +171,22 @@ app.directive('modaldraggable', function ($document) {
 
         $scope.showMenu = function(menuname) {
            if (menuname === 1) {
-                $scope.TransactionsTable = true;
-                $scope.CustomerForm = false;
-                $scope.TransferMoneyForm = false;
-                $scope.PhoneBookForm = false;
+                $scope.CustomersTable = true;
+                $scope.CountriesTable = false;
+                $scope.CurrenciesTable = false;
                 $scope.getPendingCustomers(1);
            }
-           if (menuname === 2) {$scope.getTimezone = function(timestamp) {
-           var today = new Date(timestamp);
-           var offset = today.getTimezoneOffset(); 
-           var hours = Math.floor((Math.abs(offset)) / 60);
-           if(offset < 0 )
-            {
-                today.setHours(today.getHours() + hours );
-            }
-            else
-            {
-                today.setHours(today.getHours() - hours );
-            }
-        
-            return today;
-        }
-
-                $scope.TransactionsTable = false;
-                $scope.CustomerForm = false;
-                $scope.TransferMoneyForm = true;
-                $scope.PhoneBookForm = false;
+           if (menuname === 2) {
+                $scope.CustomersTable = false;
+                $scope.CountriesTable = true;
+                $scope.CurrenciesTable = false;
+                $scope.getCountries(1);
            }
            if (menuname === 3) {
-                $scope.TransactionsTable = false;
-                $scope.CustomerForm = false;
-                $scope.TransferMoneyForm = false;
-                $scope.PhoneBookForm = true;
+                $scope.CustomersTable = false;
+                $scope.CountriesTable = false;
+                $scope.CurrenciesTable = true;
+                $scope.getCurrencies(1);
            }
         }
 
@@ -211,7 +195,6 @@ app.directive('modaldraggable', function ($document) {
             if(pageNumber===undefined){
                 pageNumber = '1';
             }
-            $scope.userinfo = angular.fromJson(sessionStorage.user);
             CustomerInfo.getPendingCust(pageNumber).then(function(d) { //2. so you can use .then()
                 $scope.pendingcustomers = d.data;
                 $scope.currentPage = d.current_page;
@@ -278,6 +261,78 @@ app.directive('modaldraggable', function ($document) {
                 }
         });
       };
+
+
+      //Get the countries 
+        $scope.getCountries= function(pageNumber){
+            if(pageNumber===undefined){
+                pageNumber = '1';
+            }
+            CountriesService.getCountries(pageNumber).then(function(d) { //2. so you can use .then()
+                $scope.countries = d.data;
+                $scope.gtcurrentPage = d.current_page;
+                $scope.gttotalPages   = d.last_page;
+                // Pagination Range
+                    var pages = [];
+
+                    for(var i=1;i<=d.last_page;i++) {          
+                        pages.push(i);
+                    }
+                    $scope.gtrange = pages; 
+            });
+
+
+        }
+
+        $scope.gtnextPage = function() {
+                if ($scope.gtcurrentPage < $scope.gttotalPages) {
+                    $scope.gtcurrentPage++;
+                    $scope.getCountries($scope.gtcurrentPage);
+                }
+            };
+        $scope.gtprevPage = function() {
+                if ($scope.gtcurrentPage > 1) {
+                    $scope.gtcurrentPage--;
+                    $scope.getCountries($scope.gtcurrentPage);
+                }
+            };
+        $scope.getCountries(1);
+
+
+        //Get the currencies
+        $scope.getCurrencies= function(pageNumber){
+            if(pageNumber===undefined){
+                pageNumber = '1';
+            }
+            CurrenciesService.getCurrencies(pageNumber).then(function(d) { //2. so you can use .then()
+                $scope.currencies = d.data;
+                $scope.gccurrentPage = d.current_page;
+                $scope.gctotalPages   = d.last_page;
+                // Pagination Range
+                    var pages = [];
+
+                    for(var i=1;i<=d.last_page;i++) {          
+                        pages.push(i);
+                    }
+                    $scope.gcrange = pages; 
+            });
+
+
+        }
+
+        $scope.gcnextPage = function() {
+                if ($scope.gccurrentPage < $scope.gctotalPages) {
+                    $scope.gccurrentPage++;
+                    $scope.getCurrencies($scope.gccurrentPage);
+                }
+            };
+        $scope.gcprevPage = function() {
+                if ($scope.gccurrentPage > 1) {
+                    $scope.gccurrentPage--;
+                    $scope.getCurrencies($scope.gccurrentPage);
+                }
+            };
+        $scope.getCurrencies(1);
 
     });
 
