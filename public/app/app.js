@@ -152,7 +152,7 @@ app.directive('modaldraggable', function ($document) {
        
     });
 
-    app.controller('adminHomeController', function($scope, $http,$location,CustomerInfo,$uibModal,CountriesService,CurrenciesService) {
+    app.controller('adminHomeController', function($scope, $http,$location,CustomerInfo,$uibModal,$uibModalStack,CountriesService,CurrenciesService) {
         $scope.getTimezone = function(timestamp) {
            var today = new Date(timestamp);
            var offset = today.getTimezoneOffset(); 
@@ -245,22 +245,53 @@ app.directive('modaldraggable', function ($document) {
       $scope.openModalCurrency = function () {
           $uibModal.open({
             templateUrl : 'views/partials/modalCurrency.html',
-            controller: [
-            "$scope",
-            function ($scope) {
-            }
-            ]
+            scope: $scope,
         });
       };
 
       $scope.openModalCountry = function () {
           $uibModal.open({
             templateUrl : 'views/partials/modalCountry.html',
-            controller: [
-            "$scope",
-            function ($scope) {
+            scope: $scope,
+        });
+      };
+
+      $scope.SaveCountry = function(records){
+         var url = '/api/country';
+         $scope.records = records;
+        $http({
+            method: 'POST',
+            url: url,
+            data: $.param($scope.records),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).then(function onSuccess(response) {
+            if (response.data){
+                $uibModalStack.dismissAll('close');
+                 $scope.getCountries(1);
             }
-            ]
+        }).catch(function onError(response) {
+            console.log(response);
+            alert('An error has occured. Please check the log for details');
+        });
+      };
+
+
+      $scope.SaveCurrency = function(records){
+         var url = '/api/currency';
+         $scope.records = records;
+        $http({
+            method: 'POST',
+            url: url,
+            data: $.param($scope.records),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).then(function onSuccess(response) {
+            if (response.data){
+                $uibModalStack.dismissAll('close');
+                $scope.getCurrencies(1);
+            }
+        }).catch(function onError(response) {
+            console.log(response);
+            alert('An error has occured. Please check the log for details');
         });
       };
 

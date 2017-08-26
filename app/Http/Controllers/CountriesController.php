@@ -45,7 +45,6 @@ class CountriesController extends Controller
         //
         $validator = Validator::make($request->all(), [
             'iso_abbr'=> 'required',
-            'name'=> 'required',
             'nicename'=> 'required',
             'iso_name'=> 'required',
             'numcode'=> 'required',
@@ -56,10 +55,24 @@ class CountriesController extends Controller
             return response()->json(['error'=>$validator->errors()], 401);            
         }
 
+        $country = new Countries;
+
+        $country->iso_abbr = $request->iso_abbr;
+        $country->name = $request->nicename;
+        $country->nicename = $request->nicename;
+        $country->iso_name = $request->iso_name;
+        $country->numcode = $request->numcode;
+        $country->phonecode = $request->phonecode;
+
+        $response = $country->save();
+
+        return Response::json($response);
+        
+        /*
         $input = $request->all();
         $country = Countries::create($input);
 
-        return 'Country created'.'  '.$country['name'];
+        return 'Country created'.'  '.$country['name'];*/
     }
 
     /**

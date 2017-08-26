@@ -47,16 +47,23 @@ class CurrenciesController extends Controller
             'country' => 'required',
             'symbol' => 'required',
             'exchange_rate' => 'required',
+            'phonecode' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error'=>$validator->errors()], 401);            
         }
+        
+        $currency = new Currencies;
 
-        $input = $request->all();
-        $currency = Currencies::create($input);
+        $currency->country = $request->country;
+        $currency->symbol = $request->symbol;
+        $currency->exchange_rate = $request->exchange_rate;
+        $currency->phonecode = $request->phonecode;
 
-        return 'Currency created'.'  '.$currency['symbol'];
+        $response = $currency->save();
+
+        return Response::json($response);
     }
 
     /**

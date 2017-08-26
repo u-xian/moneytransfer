@@ -6,56 +6,41 @@
      <div class="clearfix"></div>
     </div>  
     <div class="panel-body">
-      <form  class="form-horizontal" name="signupform" ng-submit="signup(users) && signupform.$valid" novalidate>
-        <div ng-if="processing" us-spinner></div>
-        <alert ng-if="stripeError" class="alert-danger" type="'alert'" close="hideAlerts()">          
-          <div class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong>Error!</strong> 
-            <ul ng-repeat="p in stripeError">
-              <li ng-repeat="(key, value) in p">{{value}}</li>
-            </ul>
-          </div>
-        </alert>
-        <alert ng-if="stripeToken" class="alert-success" close="hideAlerts()">
-          <div class="alert alert-success alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong>Success!</strong> {{stripeToken}}
-          </div>
-        </alert>
-        <div id="div_id_email" class="form-group required">
-          <label for="id_email" class="control-label col-md-4  requiredField"> E-mail<span class="asteriskField">*</span> </label>
+      <form  class="form-horizontal" novalidate>
+        <div class="form-group required">
+          <label  class="control-label col-md-4  requiredField">Iso Abbr<span class="asteriskField">*</span> </label>
           <div class="controls col-md-8 ">
-            <input class="input-md emailinput form-control" id="id_email" name="email" placeholder="Your current email address" style="margin-bottom: 10px" type="email" ng-model="users.email"/>
+            <input class="form-control"  style="margin-bottom: 10px" type="text" ng-model="records.iso_abbr"/>
           </div>     
         </div>
-        <div id="div_id_password1" class="form-group required">
-          <label for="id_password1" class="control-label col-md-4  requiredField">Password<span class="asteriskField">*</span> </label>
+        <div class="form-group required">
+          <label class="control-label col-md-4  requiredField">Country Name<span class="asteriskField">*</span> </label>
           <div class="controls col-md-8 "> 
-            <input class="input-md textinput textInput form-control" id="id_password1" name="password1" placeholder="Create a password" style="margin-bottom: 10px" type="password" ng-model="users.password"/>
+            <input class="form-control"  style="margin-bottom: 10px" type="text" ng-model="records.nicename"/>
           </div>
         </div>
-        <div id="div_id_password2" class="form-group required">
-          <label for="id_password2" class="control-label col-md-4  requiredField"> Re:password<span class="asteriskField">*</span> </label>
+        <div  class="form-group required">
+          <label class="control-label col-md-4  requiredField">Iso Name<span class="asteriskField">*</span> </label>
           <div class="controls col-md-8 ">
-            <input class="input-md textinput textInput form-control" id="id_password2" name="password2" placeholder="Confirm your password" style="margin-bottom: 10px" type="password" ng-model="users.c_password"/>
+            <input class="form-control" style="margin-bottom: 10px" type="text" ng-model="records.iso_name"/>
           </div>
         </div>
-        <div class="form-group">
-          <div class="controls col-md-offset-4 col-md-8 ">
-            <div id="div_id_terms" class="checkbox required">
-              <label for="id_terms" class=" requiredField">
-                <input class="input-ms checkboxinput" id="id_terms"  style="margin-bottom: 10px" type="checkbox" name="tos" value="tos" ng-model="users.tos"/>
-                Agree with the <a href="#!/helpsupport" style="color: #ED502E">terms and conditions</a>
-              </label>
-            </div> 
-
+        <div  class="form-group required">
+          <label class="control-label col-md-4  requiredField">Numcode<span class="asteriskField">*</span> </label>
+          <div class="controls col-md-8 ">
+            <input class="form-control" style="margin-bottom: 10px" type="number" ng-model="records.numcode"/>
           </div>
-        </div> 
+        </div>
+        <div  class="form-group required">
+          <label class="control-label col-md-4  requiredField">Phonecode<span class="asteriskField">*</span> </label>
+          <div class="controls col-md-8 ">
+            <input class="form-control" style="margin-bottom: 10px" type="number" ng-model="records.phonecode"/>
+          </div>
+        </div>
         <div class="form-group"> 
           <div class="aab controls col-md-4 "></div>
           <div class="controls col-md-8 ">
-            <button id="btn-signup" type="submit" class="btn btn-primary"><i class="icon-hand-right"></i> &nbsp Sign Up</button>
+            <button  type="submit" class="btn btn-primary" ng-click="SaveCountry(records)"><i class="icon-hand-right"></i> &nbsp Submit</button>
           </div>
         </div> 
       </form>
