@@ -256,41 +256,4 @@ class CustomerController extends Controller
                 'message' => $mess,
         ]);
     }
-
-    /**
-     * Upload new File
-     *
-     * @param Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function upload(Request $request)
-    {
-
-        /*$phone_complete  = $request->prefix_code.$request->phonenumber;
-        $dob = $request->year.'-'.$request->month.'-'.$request->day;
-        $input = [
-        'first_name' => $request->first_name,
-        'last_name' => $request->last_name,
-        'sex' => $request->sex,
-        'phone' => $phone_complete ,
-        'dob' => $dob,
-        'nationality' => $request->nationality,
-        'nid' => $request->nid,
-        'user_id' => $request->user_id,
-        ];*/
-
-        $fname = $request->file('image_file');
-        $result = $this->upfile->upload($fname,'4');
-
-        //$customer = Customers::create($input);
-        
-        
-
-        return Response::json($result);
-        
-
-        
-    }
-
 }
