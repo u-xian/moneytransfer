@@ -26,7 +26,9 @@ Route::get('activate_discard_customer/{id}/{action_type}', 'CustomerController@a
 Route::get('pendingcustomers', 'CustomerController@pending_customers');
 Route::get('isCustomer/{id}', 'CustomerController@isCustomer');
 Route::resource('currency', 'CurrenciesController');
+Route::get('allcurrencies', 'CurrenciesController@getAllCurrencies');
 Route::resource('country', 'CountriesController');
+Route::get('allcountries', 'CountriesController@getAllCountries');
 Route::resource('transaction', 'TransactionsController');
 Route::post('pay', 'PaymentController@paying');
 Route::post('paymobile', 'PaymentController@mobileTransfer');

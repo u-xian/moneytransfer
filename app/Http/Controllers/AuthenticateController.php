@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\User;
+use App\Customers;
 use Cartalyst\Sentinel\Native\Facades\Sentinel;
 use Reminder;
 use Cartalyst\Sentinel\Checkpoints\NotActivatedException;
@@ -43,10 +44,12 @@ class AuthenticateController extends Controller
             {
                 $userdetails = Sentinel::findById($user['id']);
                 $login = Sentinel::login($userdetails);
+                $customer = Customers::where('user_id', '=', $login['id'])->first();
                 $outputs = [
                     'id'=> $login['id'],
                     'email' => $login['email'], 
                     'is_admin' => ($login['is_admin'] > 0 ? true : false),
+                    'customer_id' => $customer['id'],
                     'status' => true,
                     'message'=>'Account activated.'
                 ];

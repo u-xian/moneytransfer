@@ -144,4 +144,13 @@ class CurrenciesController extends Controller
 
         return 'Successfully deleted the currency!';
     }
+
+     public function getAllCurrencies()
+    {
+        //
+        $currencies = DB::table('currencies')
+                    ->select('id','country','symbol','exchange_rate','phonecode')
+                    ->get();
+        return $currencies;
+    }
 }

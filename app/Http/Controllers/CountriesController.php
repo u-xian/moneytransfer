@@ -159,4 +159,13 @@ class CountriesController extends Controller
 
         return 'Successfully deleted the country!';
     }
+
+    public function getAllCountries()
+    {
+        //
+        $countries = DB::table('Countries')
+                    ->select('id','iso_abbr','name','nicename','iso_name','numcode','phonecode')
+                    ->get();
+        return $countries;
+    }
 }

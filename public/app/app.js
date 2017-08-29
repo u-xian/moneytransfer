@@ -147,7 +147,8 @@ app.directive('modaldraggable', function ($document) {
             });
 	});
 
-    
+
+
 	app.controller('mainController', function($scope, $http,$location) {
        
     });
@@ -414,7 +415,7 @@ app.directive('modaldraggable', function ($document) {
         };
 
         $scope.userinfo = angular.fromJson(sessionStorage.user);
-        $http.get('/api/customer/' + $scope.userinfo.id)
+        $http.get('/api/customer/' + $scope.userinfo.customer_id)
             .then(function onSuccess(response) {
                 $scope.customerinfo = response.data;
         });
@@ -468,7 +469,7 @@ app.directive('modaldraggable', function ($document) {
 
     });
 
-    app.controller('sendMoneyHomeController', function($scope, $routeParams,CustomerInfo,CheckStatusService,TransactionService){
+    app.controller('sendMoneyHomeController', function($scope, $routeParams,CustomerInfo,CheckStatusService,TransactionService,CountryService){
         $scope.param = $routeParams.id;
         var id = $scope.param;
         $scope.userid = $scope.param;
@@ -531,6 +532,12 @@ app.directive('modaldraggable', function ($document) {
                     dvrb: i
                 });
         }
+
+        CountryService.getCountry().then(function(d) { //2. so you can use .then()
+            $scope.countries = d;
+        });
+
+       
 
         $scope.getTimezone = function(timestamp) {
            var today = new Date(timestamp);
@@ -704,18 +711,14 @@ app.directive('modaldraggable', function ($document) {
             $scope.stripeToken = null;
         };
 
-        CurrencyService.getCurrency().then(function(d) { //2. so you can use .then()
-            $scope.currencies = d;
-        });
-       
-
         $scope.status = {
             isFirstOpen: true,
             isFirstOpen2: true,
         };
         $scope.rates = {};
-        $http.get('/api/currency')
+        $http.get('/api/allcurrencies')
             .then(function(res) {
+                $scope.currencies = res.data;
                 $scope.rates = res.data;
                 $scope.forExConvert();
             });

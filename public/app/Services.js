@@ -17,7 +17,19 @@ app.factory('CheckStatusService', function($http) {
 app.factory('CurrencyService', function($http) {
   return {
     getCurrency: function() {
-      return $http.get('/api/currency')
+      return $http.get('/api/allcurrencies')
+      .then(function onSuccess(response) {
+             // Handle success
+             return  response.data;            
+            });  //1. this returns promise
+    }
+  };
+});
+
+app.factory('CountryService', function($http) {
+  return {
+    getCountry: function() {
+      return $http.get('/api/allcountries')
       .then(function onSuccess(response) {
              // Handle success
              return  response.data;            

@@ -49,7 +49,8 @@
     <script src="{{ asset('/js/angular-route.min.js') }}"></script>
     <script src="{{ asset('/js/angular-animate.js') }} "></script>
     <script src="{{ asset('/js/angular-sanitize.js') }} "></script>
-    <script src="{{ asset('/js/angular-messages.js') }} "></script>
+    <script src="{{ asset('/js/angular-messages.js') }} "></script> 
+    <script src="{{ asset('/js/underscore-min.js') }} "></script>
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
     <script src=" {{ asset('/js/angular-payments.js') }}"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.js"></script>
