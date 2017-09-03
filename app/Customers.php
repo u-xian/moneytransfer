@@ -33,6 +33,6 @@ class Customers extends Model
      */
     public function photos()
     {
-        return $this->hasOne('App\Customerfiles','customer_id','id');
+        return $this->hasOne('App\Customerfile','customer_id','id');
     }
 }
