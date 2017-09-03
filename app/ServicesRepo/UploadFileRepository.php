@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Customers;
 use Carbon\Carbon;
-use App\Customerfiles;
+use App\CustomerFiles;
 use Response;
 
 class UploadFileRepository implements UploadFileRepositoryInterface
@@ -26,7 +26,7 @@ class UploadFileRepository implements UploadFileRepositoryInterface
      */
 	public function listFiles()
     {
-        return ['files' => Customerfiles::all()];
+        return ['files' => CustomerFiles::all()];
     }
 
     /**
@@ -46,7 +46,7 @@ class UploadFileRepository implements UploadFileRepositoryInterface
             'customer_id' => $customerid
         ];
 
-        $fileresults = Customerfiles::create($file);
+        $fileresults = CustomerFiles::create($file);
 
         if($fileresults['id'] > 0) 
         {
