@@ -18,7 +18,7 @@ class CountriesController extends Controller
     public function index()
     {
         //
-        $countries = DB::table('Countries')
+        $countries = DB::table('countries')
                     ->select('id','iso_abbr','name','nicename','iso_name','numcode','phonecode')
                     ->paginate(5);
         return $countries;
@@ -163,7 +163,7 @@ class CountriesController extends Controller
     public function getAllCountries()
     {
         //
-        $countries = DB::table('Countries')
+        $countries = DB::table('countries')
                     ->select('id','iso_abbr','name','nicename','iso_name','numcode','phonecode')
                     ->get();
         return $countries;
