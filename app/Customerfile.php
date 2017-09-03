@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CustomerFiles extends Model
+class Customerfile extends Model
 {
     //
     protected $fillable = [
@@ -17,4 +17,5 @@ class CustomerFiles extends Model
     {
         return $this->belongsTo('App\Customers','customer_id','id');
     }
+
 }
